@@ -1,0 +1,6 @@
+@article{rodriguez2023starvector,
+    title={{StarVector: Generating Scalable Vector Graphics Code from Images and Text}},
+    author={Juan A. Rodriguez and Abhay Puri and Shubham Agarwal and Issam H. Laradji and Pau Rodriguez and Sai Rajeswar and David Vazquez and Christopher Pal and Marco Pedersoli},
+    year={2023},
+    journal={arXiv preprint arXiv:2312.11556},
+}
