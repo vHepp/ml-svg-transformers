@@ -1,0 +1,254 @@
+# This is a base shape file encoded in yaml
+# - `null` indicates a dimension is "finite", i.e. a non-"width" dimension
+# - a number indicates the base dimension of an "infinite" dimension, i.e. some notion of "width"
+blocks.0.MHA.heads.0.key.weight:
+- null
+- null
+blocks.0.MHA.heads.0.query.weight:
+- null
+- null
+blocks.0.MHA.heads.0.value.weight:
+- null
+- null
+blocks.0.MHA.heads.1.key.weight:
+- null
+- null
+blocks.0.MHA.heads.1.query.weight:
+- null
+- null
+blocks.0.MHA.heads.1.value.weight:
+- null
+- null
+blocks.0.MHA.heads.2.key.weight:
+- null
+- null
+blocks.0.MHA.heads.2.query.weight:
+- null
+- null
+blocks.0.MHA.heads.2.value.weight:
+- null
+- null
+blocks.0.MHA.heads.3.key.weight:
+- null
+- null
+blocks.0.MHA.heads.3.query.weight:
+- null
+- null
+blocks.0.MHA.heads.3.value.weight:
+- null
+- null
+blocks.0.MHA.proj.bias:
+- null
+blocks.0.MHA.proj.weight:
+- null
+- null
+blocks.0.ff.layer.0.bias:
+- null
+blocks.0.ff.layer.0.weight:
+- null
+- null
+blocks.0.ff.layer.2.bias:
+- null
+blocks.0.ff.layer.2.weight:
+- null
+- null
+blocks.0.ln_1.bias:
+- null
+blocks.0.ln_1.weight:
+- null
+blocks.0.ln_2.bias:
+- null
+blocks.0.ln_2.weight:
+- null
+blocks.1.MHA.heads.0.key.weight:
+- null
+- null
+blocks.1.MHA.heads.0.query.weight:
+- null
+- null
+blocks.1.MHA.heads.0.value.weight:
+- null
+- null
+blocks.1.MHA.heads.1.key.weight:
+- null
+- null
+blocks.1.MHA.heads.1.query.weight:
+- null
+- null
+blocks.1.MHA.heads.1.value.weight:
+- null
+- null
+blocks.1.MHA.heads.2.key.weight:
+- null
+- null
+blocks.1.MHA.heads.2.query.weight:
+- null
+- null
+blocks.1.MHA.heads.2.value.weight:
+- null
+- null
+blocks.1.MHA.heads.3.key.weight:
+- null
+- null
+blocks.1.MHA.heads.3.query.weight:
+- null
+- null
+blocks.1.MHA.heads.3.value.weight:
+- null
+- null
+blocks.1.MHA.proj.bias:
+- null
+blocks.1.MHA.proj.weight:
+- null
+- null
+blocks.1.ff.layer.0.bias:
+- null
+blocks.1.ff.layer.0.weight:
+- null
+- null
+blocks.1.ff.layer.2.bias:
+- null
+blocks.1.ff.layer.2.weight:
+- null
+- null
+blocks.1.ln_1.bias:
+- null
+blocks.1.ln_1.weight:
+- null
+blocks.1.ln_2.bias:
+- null
+blocks.1.ln_2.weight:
+- null
+blocks.2.MHA.heads.0.key.weight:
+- null
+- null
+blocks.2.MHA.heads.0.query.weight:
+- null
+- null
+blocks.2.MHA.heads.0.value.weight:
+- null
+- null
+blocks.2.MHA.heads.1.key.weight:
+- null
+- null
+blocks.2.MHA.heads.1.query.weight:
+- null
+- null
+blocks.2.MHA.heads.1.value.weight:
+- null
+- null
+blocks.2.MHA.heads.2.key.weight:
+- null
+- null
+blocks.2.MHA.heads.2.query.weight:
+- null
+- null
+blocks.2.MHA.heads.2.value.weight:
+- null
+- null
+blocks.2.MHA.heads.3.key.weight:
+- null
+- null
+blocks.2.MHA.heads.3.query.weight:
+- null
+- null
+blocks.2.MHA.heads.3.value.weight:
+- null
+- null
+blocks.2.MHA.proj.bias:
+- null
+blocks.2.MHA.proj.weight:
+- null
+- null
+blocks.2.ff.layer.0.bias:
+- null
+blocks.2.ff.layer.0.weight:
+- null
+- null
+blocks.2.ff.layer.2.bias:
+- null
+blocks.2.ff.layer.2.weight:
+- null
+- null
+blocks.2.ln_1.bias:
+- null
+blocks.2.ln_1.weight:
+- null
+blocks.2.ln_2.bias:
+- null
+blocks.2.ln_2.weight:
+- null
+blocks.3.MHA.heads.0.key.weight:
+- null
+- null
+blocks.3.MHA.heads.0.query.weight:
+- null
+- null
+blocks.3.MHA.heads.0.value.weight:
+- null
+- null
+blocks.3.MHA.heads.1.key.weight:
+- null
+- null
+blocks.3.MHA.heads.1.query.weight:
+- null
+- null
+blocks.3.MHA.heads.1.value.weight:
+- null
+- null
+blocks.3.MHA.heads.2.key.weight:
+- null
+- null
+blocks.3.MHA.heads.2.query.weight:
+- null
+- null
+blocks.3.MHA.heads.2.value.weight:
+- null
+- null
+blocks.3.MHA.heads.3.key.weight:
+- null
+- null
+blocks.3.MHA.heads.3.query.weight:
+- null
+- null
+blocks.3.MHA.heads.3.value.weight:
+- null
+- null
+blocks.3.MHA.proj.bias:
+- null
+blocks.3.MHA.proj.weight:
+- null
+- null
+blocks.3.ff.layer.0.bias:
+- null
+blocks.3.ff.layer.0.weight:
+- null
+- null
+blocks.3.ff.layer.2.bias:
+- null
+blocks.3.ff.layer.2.weight:
+- null
+- null
+blocks.3.ln_1.bias:
+- null
+blocks.3.ln_1.weight:
+- null
+blocks.3.ln_2.bias:
+- null
+blocks.3.ln_2.weight:
+- null
+ln_f.bias:
+- null
+ln_f.weight:
+- null
+positional_embedding.weight:
+- null
+- null
+proj.bias:
+- null
+proj.weight:
+- null
+- null
+token_embedding.weight:
+- null
+- null
