@@ -1,0 +1,12 @@
+numpy
+pandas
+matplotlib
+datasets
+lightning-bolts
+lxml
+cairosvg
+tqdm
+tokenizers
+torch
+scipy
+mup

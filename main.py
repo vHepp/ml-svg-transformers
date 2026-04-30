@@ -1,12 +1,12 @@
 # %% [markdown]
 # # Optional Project - Transformer Scaling Laws on SVGs
-#
+# 
 # Vincent Hepola - vh2308
-#
+# 
 
 # %% [markdown]
 # # 0. Imports
-#
+# 
 
 # %%
 from IPython.display import SVG, display
@@ -52,11 +52,11 @@ from mup import MuReadout, make_base_shapes, set_base_shapes, MuSGD, MuAdam
 
 # %% [markdown]
 # # 1. Data Collecting and Preprocessing
-#
+# 
 
 # %% [markdown]
 # ## 1.1 Datasets
-#
+# 
 
 # %%
 # dataset_1 = load_dataset("starvector/svg-icons-simple")
@@ -88,26 +88,25 @@ print(dataset)
 
 # %% [markdown]
 # ### View Sample
-#
+# 
 
 # %%
-sample_1 = dataset["Svg"][2]
+# sample_1 = dataset["Svg"][2]
 
 # %%
-print(sample_1)
-display(SVG(sample_1))
+# print(sample_1)
+# display(SVG(sample_1))
 
 # %% [markdown]
 # ## 1.2 Normalizing/Cleaning
-#
+# 
 # - Strip comments, metadata, and unnecessary whitespace
 # - Normalize coordinate precision (e.g., round to 1 decimal place) to reduce vocabulary
 # - Optionally canonicalize attribute ordering
 # - Remove SVGs that are too short (< 50 characters) or too long (above your chosen token threshold)
 # - Validate that all SVGs in the cleaned set parse as valid XML
 # - Ensure all SVGs render without errors (use lxml for XML parsing, optionally CairoSVG for render validation)
-#
-
+# 
 
 # %%
 def clean_svg(svg_text):
@@ -148,17 +147,17 @@ def clean_svg(svg_text):
     return svg_text
 
 
-# Example Test:
-raw_svg = '<svg><path d="M10,20.35L.5 30"/></svg>'
-print(clean_svg(raw_svg))
+# # Example Test:
+# raw_svg = '<svg><path d="M10,20.35L.5 30"/></svg>'
+# print(clean_svg(raw_svg))
 
 # %%
-svg_string = clean_svg(sample_1)
-print(svg_string)
+# svg_string = clean_svg(sample_1)
+# print(svg_string)
 
 # %% [markdown]
 # ### Clean and verify all svgs in training set
-#
+# 
 
 # %%
 TOKEN_THRESHOLD = 2048
@@ -191,7 +190,6 @@ cleaned_val
 
 # %%
 cleaned_test
-
 
 # %%
 def is_valid(d):
@@ -229,11 +227,11 @@ print(f"filtered_train.num_rows: {filtered_train.num_rows}")
 
 # %% [markdown]
 # ## 1.3 Tokenize
-#
+# 
 # Train a BPE tokenizer on your SVG corpus using sentencepiece or the HuggingFace
 # tokenizers library. Vocabulary sizes in the range 1K–8K are reasonable. Document the vocabulary
 # size and justify your choice in the report.
-#
+# 
 
 # %%
 # small initials
@@ -265,22 +263,21 @@ except:
     tokenizer.save("tokenizer.json")
 
 # %%
-sample_2 = filtered_train["Svg"][0]
-sample_2
+# sample_2 = filtered_train["Svg"][0]
+# sample_2
 
 # %%
-encoded_sample_2 = tokenizer.encode(sample_2)
+# encoded_sample_2 = tokenizer.encode(sample_2)
 
-print(encoded_sample_2)
+# print(encoded_sample_2)
 
 
-# First 10 tokens on encoding
-for id, token in zip(encoded_sample_2.ids[:10], encoded_sample_2.tokens[:10]):
-    print(f"{id} -> {token}")
+# # First 10 tokens on encoding
+# for id, token in zip(encoded_sample_2.ids[:10], encoded_sample_2.tokens[:10]):
+#     print(f"{id} -> {token}")
 
 # %%
-tokenizer.decode(encoded_sample_2.ids)
-
+# tokenizer.decode(encoded_sample_2.ids)
 
 # %%
 def tokenize_svg(d):
@@ -295,13 +292,11 @@ def tokenize_svg(d):
 
     return {"Filename": d["Filename"], "Svg": d["Svg"], "input_ids": ids}
 
+# %%
+tokenized_train = filtered_train.map(tokenize_svg, num_proc=8)
 
 # %%
-tokenized_train = filtered_train.map(tokenize_svg)
-
-# %%
-tokenized_train["input_ids"]
-
+# tokenized_train["input_ids"]
 
 # %%
 def flatten_input_ids(tokenized_dataset):
@@ -319,22 +314,22 @@ train_input_ids = np.array(train_input_ids)
 len(train_input_ids)
 
 # %%
-len(np.unique(train_input_ids))
+print(f"len(np.unique(train_input_ids)): {len(np.unique(train_input_ids))}")
 
 # %% [markdown]
 # ### Create, clean, filter, and tokenize test/val datasets
-#
+# 
 
 # %%
 filtered_test = cleaned_test.filter(is_valid)
 # filtered_val = filtered_val.filter(valid_render)
-tokenized_test = filtered_test.map(tokenize_svg)
+tokenized_test = filtered_test.map(tokenize_svg, num_proc=8)
 test_input_ids = flatten_input_ids(tokenized_test)
 test_input_ids = np.array(test_input_ids)
 
 filtered_val = cleaned_val.filter(is_valid)
 # filtered_val = filtered_val.filter(valid_render)
-tokenized_val = filtered_val.map(tokenize_svg)
+tokenized_val = filtered_val.map(tokenize_svg, num_proc=8)
 val_input_ids = flatten_input_ids(tokenized_val)
 val_input_ids = np.array(val_input_ids)
 
@@ -354,18 +349,18 @@ print(
 
 # %% [markdown]
 # # 2. Transformer Scaling Study
-#
+# 
 # Train a family of decoder-only transformer language models of varying sizes on the SVG data. Measure the
 # validation loss after 1 epoch of training for each model size.
-#
+# 
 
 # %% [markdown]
 # ## 2.0 Setup
-#
+# 
 
 # %% [markdown]
 # ### 2.0.0 Dataloaders
-#
+# 
 
 # %%
 import torch
@@ -415,8 +410,7 @@ print(f"X shape: {X_train.shape}, Y shape: {Y_train.shape}")
 
 # %% [markdown]
 # ### 2.0.1 Define Model and Functions
-#
-
+# 
 
 # %%
 class Head(nn.Module):
@@ -594,7 +588,6 @@ class CustomTransformer(nn.Module):
 
         return logits, loss
 
-
 # %%
 def estimate_loss(model, val_loader, eval_iters=50):
 
@@ -684,7 +677,6 @@ def train_loop(
         "gpu_memory_mb": max_mem_mb,
     }
 
-
 # %%
 # Keeping depth the same (n_layers, n_heads) and only varying width (d_model, d_ff)
 configs = {
@@ -699,11 +691,9 @@ configs = {
 def count_parameters(model):
     return sum(p.numel() for p in model.parameters() if p.requires_grad)
 
-
 # %% [markdown]
 # ### 2.0.2 Single Burn Run
-#
-
+# 
 
 # %%
 def render_svg(s):
@@ -733,75 +723,74 @@ def render_svg(s):
     except Exception as e:
         print(f"Failed to render: {e}")
 
+# %%
+# model = CustomTransformer(
+#     vocab_size=VOCAB_SIZE,
+#     block_size=BLOCK_SIZE,
+#     n_layers=4,
+#     n_heads=4,
+#     d_model=128,
+#     d_ff=512,
+# ).to(device)
+
+# total_params = sum(p.numel() for p in model.parameters())
+# print(f"total_params: {total_params}")
 
 # %%
-model = CustomTransformer(
-    vocab_size=VOCAB_SIZE,
-    block_size=BLOCK_SIZE,
-    n_layers=4,
-    n_heads=4,
-    d_model=128,
-    d_ff=512,
-).to(device)
+# model.eval()
 
-total_params = sum(p.numel() for p in model.parameters())
-print(f"total_params: {total_params}")
+# with torch.inference_mode():
 
-# %%
-model.eval()
+#     # start_point = torch.randint(1, VOCAB_SIZE, size=(1, 1), device=device)
+#     start_context = tokenizer.encode("<svg ").ids
+#     # print(start_context)
+#     start_point = torch.tensor([start_context], device=device)
 
-with torch.inference_mode():
+#     print(start_point)
+#     print(start_point.shape)
 
-    # start_point = torch.randint(1, VOCAB_SIZE, size=(1, 1), device=device)
-    start_context = tokenizer.encode("<svg ").ids
-    # print(start_context)
-    start_point = torch.tensor([start_context], device=device)
+#     result = model.generate(start_point, 100)
+#     print(result.shape)
+#     result = result.squeeze(0).cpu().tolist()
+#     result.append(0)
 
-    print(start_point)
-    print(start_point.shape)
+#     print(result)
 
-    result = model.generate(start_point, 100)
-    print(result.shape)
-    result = result.squeeze(0).cpu().tolist()
-    result.append(0)
+#     decoded = tokenizer.decode(result)
 
-    print(result)
+#     print(decoded)
 
-    decoded = tokenizer.decode(result)
-
-    print(decoded)
-
-render_svg(decoded)
+# render_svg(decoded)
 
 # %%
-optimizer = AdamW(model.parameters())
+# optimizer = AdamW(model.parameters())
 
-temp_train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
-temp_val_loader = DataLoader(val_dataset, batch_size=64)
+# temp_train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
+# temp_val_loader = DataLoader(val_dataset, batch_size=64)
 
-train_loop(model, optimizer, temp_train_loader, temp_val_loader, steps=1000)
+# train_loop(model, optimizer, temp_train_loader, temp_val_loader, steps=1000)
 
 # %%
-model.eval()
+# model.eval()
 
-with torch.inference_mode():
-    result_trained = model.generate(start_point, 500)
+# with torch.inference_mode():
+#     result_trained = model.generate(start_point, 500)
 
-    result_trained = result_trained.squeeze(0).cpu().tolist()
+#     result_trained = result_trained.squeeze(0).cpu().tolist()
 
-    result_trained.append(0)
+#     result_trained.append(0)
 
-    # # result_trained.append[start_point]
+#     # # result_trained.append[start_point]
 
-    decoded_trained = tokenizer.decode(result_trained)
+#     decoded_trained = tokenizer.decode(result_trained)
 
-    print(decoded_trained)
+#     print(decoded_trained)
 
-render_svg(decoded_trained)
+# render_svg(decoded_trained)
 
 # %% [markdown]
 # ## 2.1 LR Sweep
-#
+# 
 
 # %%
 lrs = np.logspace(-7, -1, num=7)
@@ -857,12 +846,12 @@ print(f"Lowest val_loss when lr = {best_lr}")
 
 # %% [markdown]
 # ## 2.2 Train Model Family
-#
+# 
 
 # %%
 scaling_results = {}
 
-steps_per_epoch = len(train_loader) // 5
+steps_per_epoch = len(train_loader)
 
 print(
     f"Starting Scaling Laws Experiment with Best LR = {best_lr} (1 Epoch = {steps_per_epoch} steps)"
@@ -917,7 +906,7 @@ for name, config in configs.items():
 
 # %% [markdown]
 # ## 2.3 Plots
-#
+# 
 
 # %%
 import numpy as np
@@ -1006,23 +995,22 @@ plt.show()
 
 # %% [markdown]
 # # 3. µP Scaling and Extrapolation
-#
+# 
 
 # %% [markdown]
 # In Part 2, you tuned the learning rate on the smallest model and used it for all model sizes. In this part,
 # you will investigate whether µP (Maximal Update Parameterization) can improve scaling behavior by
 # enabling principled learning rate transfer across model widths. You will also use your scaling laws to make
 # predictions beyond the model sizes you trained.
-#
+# 
 
 # %% [markdown]
 # ## 3.1 Scaling Study
-#
+# 
 
 # %% [markdown]
 # ### 3.1.1 Reparameterize
-#
-
+# 
 
 # %%
 class MuHead(nn.Module):
@@ -1179,10 +1167,9 @@ class MuCustomTransformer(nn.Module):
 
         return logits, loss
 
-
 # %% [markdown]
 # ### 3.1.2 LR Sweep
-#
+# 
 
 # %%
 lrs = np.logspace(-7, -1, num=7)
@@ -1325,6 +1312,10 @@ for name, config in configs.items():
     # Optional: Save the model weights so you can generate SVGs later
     torch.save(target_model.state_dict(), f"mu_model_{name.lower()}.pt")
 
+# %% [markdown]
+# ### 3.1.3 Plots
+# 
+
 # %%
 # 1. Extract the data
 params_list = np.array([res["params"] for res in mu_scaling_results.values()])
@@ -1405,3 +1396,185 @@ plt.legend()
 plt.grid(True, ls="--", alpha=0.5)
 plt.savefig("mu_plot_2.png")
 plt.show()
+
+# %%
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.optimize import curve_fit
+
+# =====================================================================
+# DATA EXTRACTION
+# Ensure these match the dictionary names you used in your earlier loops
+# =====================================================================
+
+# Standard Parameterization (SP) Data
+names_sp = list(scaling_results.keys())
+params_sp = [res["params"] for res in scaling_results.values()]
+losses_sp = [res["final_val_loss"] for res in scaling_results.values()]
+
+# Maximal Update Parameterization (µP) Data
+names_mup = list(mu_scaling_results.keys())
+params_mup = [res["params"] for res in mu_scaling_results.values()]
+losses_mup = [res["final_val_loss"] for res in mu_scaling_results.values()]
+
+
+# Power Law Function
+def power_law(N, a, alpha, c):
+    return a * (N**-alpha) + c
+
+
+# =====================================================================
+# 1 & 2. COMBINED SCALING CURVES & POWER LAW FITS
+# =====================================================================
+plt.figure(figsize=(12, 7))
+
+# --- Fit & Plot Standard Parameterization (SP) ---
+popt_sp, _ = curve_fit(
+    power_law, params_sp, losses_sp, p0=[1.0, 0.1, 0.5], maxfev=10000
+)
+a_sp, alpha_sp, c_sp = popt_sp
+
+x_smooth_sp = np.logspace(
+    np.log10(min(params_sp) * 0.8), np.log10(max(params_sp) * 1.2), 100
+)
+y_smooth_sp = power_law(x_smooth_sp, *popt_sp)
+
+plt.scatter(
+    params_sp, losses_sp, color="red", s=120, zorder=5, marker="o", label="SP Empirical"
+)
+plt.plot(
+    x_smooth_sp,
+    y_smooth_sp,
+    "r--",
+    linewidth=2.5,
+    label=f"SP Fit: $\\alpha = {alpha_sp:.4f}$",
+)
+
+# --- Fit & Plot Maximal Update Parameterization (µP) ---
+popt_mup, _ = curve_fit(
+    power_law, params_mup, losses_mup, p0=[1.0, 0.1, 0.5], maxfev=10000
+)
+a_mup, alpha_mup, c_mup = popt_mup
+
+x_smooth_mup = np.logspace(
+    np.log10(min(params_mup) * 0.8), np.log10(max(params_mup) * 1.2), 100
+)
+y_smooth_mup = power_law(x_smooth_mup, *popt_mup)
+
+plt.scatter(
+    params_mup,
+    losses_mup,
+    color="blue",
+    s=120,
+    zorder=5,
+    marker="s",
+    label="µP Empirical",
+)
+plt.plot(
+    x_smooth_mup,
+    y_smooth_mup,
+    "b-",
+    linewidth=2.5,
+    label=f"µP Fit: $\\alpha = {alpha_mup:.4f}$",
+)
+
+# --- Formatting ---
+plt.xscale("log")
+# plt.yscale("log") # Optional: uncomment if you want log-log scale for y too
+
+# Annotate points
+for i, name in enumerate(names_sp):
+    plt.annotate(
+        name,
+        (params_sp[i], losses_sp[i]),
+        textcoords="offset points",
+        xytext=(0, 15),
+        ha="center",
+        color="red",
+    )
+for i, name in enumerate(names_mup):
+    plt.annotate(
+        name,
+        (params_mup[i], losses_mup[i]),
+        textcoords="offset points",
+        xytext=(0, -20),
+        ha="center",
+        color="blue",
+    )
+
+plt.title("Scaling Laws: Standard Parameterization vs. µP", fontsize=16)
+plt.xlabel("Model Parameters $N$ (Log Scale)", fontsize=12)
+plt.ylabel("Validation Loss", fontsize=12)
+plt.legend(fontsize=12)
+plt.grid(True, which="both", ls="--", alpha=0.5)
+plt.tight_layout()
+plt.savefig("comparison_scaling_laws.png", dpi=300)
+plt.show()
+
+# =====================================================================
+# 3. LEARNING RATE SWEEP COMPARISON ON TINY MODEL
+# =====================================================================
+# Ensure `lrs`, `lr_results` (from Part 2), and `mu_lr_results` (from Part 3) exist
+plt.figure(figsize=(10, 6))
+
+plt.plot(
+    lrs,
+    lr_results,
+    marker="o",
+    linestyle="-",
+    color="red",
+    linewidth=2,
+    label="Standard Parameterization",
+)
+plt.plot(
+    lrs,
+    mu_lr_results,
+    marker="s",
+    linestyle="-",
+    color="blue",
+    linewidth=2,
+    label="µP Parameterization",
+)
+
+# Highlight the minimums (Best LRs)
+best_lr_idx = np.argmin(lr_results)
+mu_best_lr_idx = np.argmin(mu_lr_results)
+
+plt.scatter(
+    lrs[best_lr_idx],
+    lr_results[best_lr_idx],
+    color="darkred",
+    s=200,
+    zorder=5,
+    edgecolor="black",
+)
+plt.scatter(
+    lrs[mu_best_lr_idx],
+    mu_lr_results[mu_best_lr_idx],
+    color="darkblue",
+    s=200,
+    zorder=5,
+    edgecolor="black",
+)
+
+# Formatting
+plt.xscale("log")
+plt.title("Learning Rate Sweep: SP vs. µP on Tiny Model", fontsize=16)
+plt.xlabel("Learning Rate (Log Scale)", fontsize=12)
+plt.ylabel("Validation Loss", fontsize=12)
+plt.legend(fontsize=12)
+plt.grid(True, which="both", ls="--", alpha=0.5)
+plt.tight_layout()
+plt.savefig("comparison_lr_sweeps.png", dpi=300)
+plt.show()
+
+# Print quantitative comparison
+print(f"--- FITTED EXPONENT COMPARISON ---")
+print(f"Standard (SP) Alpha : {alpha_sp:.4f}")
+print(f"µP Alpha            : {alpha_mup:.4f}")
+print(f"Difference          : {abs(alpha_mup - alpha_sp):.4f}")
+print(f"\n--- BEST LEARNING RATES ---")
+print(f"Standard (SP) Best LR: {lrs[best_lr_idx]:.1e}")
+print(f"µP Best LR           : {lrs[mu_best_lr_idx]:.1e}")
+
+
