@@ -26,7 +26,7 @@ import torch.nn.functional as F
 
 torch.manual_seed(42)
 
-torch.set_float32_matmul_precision('high')
+torch.set_float32_matmul_precision("high")
 
 
 from torch.optim import AdamW
@@ -300,7 +300,7 @@ def tokenize_svg(d):
 
 
 # %%
-tokenized_train = filtered_train.map(tokenize_svg, num_proc=8)
+tokenized_train = filtered_train.map(tokenize_svg)  # , num_proc=8)
 
 # %%
 # tokenized_train["input_ids"]
@@ -315,7 +315,9 @@ print("Flattening tokenized_dataset (PyArrow backend)...")
 # .combine_chunks() ensures the memory is contiguous
 # .flatten() removes the sub-lists instantaneously
 # .to_numpy() creates a zero-copy NumPy array
-train_input_ids = tokenized_train.data["input_ids"].combine_chunks().flatten().to_numpy()
+train_input_ids = (
+    tokenized_train.data["input_ids"].combine_chunks().flatten().to_numpy()
+)
 
 print(f"Done! Shape: {train_input_ids.shape}")
 
@@ -332,13 +334,13 @@ print("Preparing val and test dataset")
 
 filtered_test = cleaned_test.filter(is_valid)
 # filtered_val = filtered_val.filter(valid_render)
-tokenized_test = filtered_test.map(tokenize_svg, num_proc=8)
+tokenized_test = filtered_test.map(tokenize_svg)  # , num_proc=8)
 test_input_ids = tokenized_test.data["input_ids"].combine_chunks().flatten().to_numpy()
 test_input_ids = np.array(test_input_ids)
 
 filtered_val = cleaned_val.filter(is_valid)
 # filtered_val = filtered_val.filter(valid_render)
-tokenized_val = filtered_val.map(tokenize_svg, num_proc=8)
+tokenized_val = filtered_val.map(tokenize_svg)  # , num_proc=8)
 val_input_ids = tokenized_val.data["input_ids"].combine_chunks().flatten().to_numpy()
 val_input_ids = np.array(val_input_ids)
 
@@ -413,17 +415,10 @@ train_dataset = TensorDataset(X_train, Y_train)
 val_dataset = TensorDataset(X_val, Y_val)
 
 train_loader = DataLoader(
-    train_dataset,
-    batch_size=256,
-    shuffle=True,
-    num_workers = 4,
-    pin_memory=True
+    dataset=train_dataset, batch_size=256, shuffle=True, num_workers=0, pin_memory=True
 )
 val_loader = DataLoader(
-    val_dataset,
-    batch_size=128,
-    num_workers = 4,
-    pin_memory=True
+    dataset=val_dataset, batch_size=128, shuffle=False, num_workers=0, pin_memory=True
 )
 
 print(f"X Train shape: {X_train.shape}, Y Train shape: {Y_train.shape}")
@@ -490,7 +485,6 @@ def train_loop(
         with torch.autocast(device_type="cuda", dtype=torch.bfloat16):
             _, loss = model(X, targets=Y)
 
-        
         optimizer.zero_grad(set_to_none=True)
         loss.backward()
         torch.nn.utils.clip_grad_norm_(
@@ -602,9 +596,7 @@ class MuHead(nn.Module):
         # output = F.softmax(wei, dim=-1) @ v
 
         output = F.scaled_dot_product_attention(
-            q, k, v, 
-            is_causal=True, 
-            scale=1.0 / self.head_size 
+            q, k, v, is_causal=True, scale=1.0 / self.head_size
         )
 
         return output
@@ -757,12 +749,12 @@ print(f"Lowest val_loss when lr = {mu_best_lr}")
 mup_training_results = {}
 
 steps_per_epoch = len(train_loader)
-epochs = 20
+epochs = 10
 
 total_training_steps = steps_per_epoch * epochs
 
 
-name = "XL"  # Explicitly defining the name for your print statements and saving
+name = "Tiny"  # Explicitly defining the name for your print statements and saving
 
 print(
     f" Starting muP Training {name} model with Best LR = {mu_best_lr}\n"
@@ -810,6 +802,10 @@ scheduler = LinearWarmupCosineAnnealingLR(
     eta_min=mu_best_lr * 0.1,  # Decay to 10% of max LR
 )
 
+global_train_losses = []
+global_val_losses = []
+global_val_steps = []
+
 for epoch in range(epochs):
     print(f"\n--- Epoch {epoch + 1}/{epochs} ---")
 
@@ -829,8 +825,22 @@ for epoch in range(epochs):
     print(f"   Throughput: {metrics['tokens_per_sec']:,.0f} tokens/sec")
     print(f"   Peak GPU Memory: {metrics['gpu_memory_mb']:.1f} MB")
 
+    # --- Accumulate metrics ---
+    global_train_losses.extend(metrics["train_loss_history"])
+    global_val_losses.extend(metrics["val_loss_history"])
+
+    # Offset the evaluation steps by the total number of steps already completed
+    steps_completed = epoch * steps_per_epoch
+    offset_eval_steps = [s + steps_completed for s in metrics["eval_steps"]]
+    global_val_steps.extend(offset_eval_steps)
+
     # Save for plotting
     metrics["params"] = params
+
+    metrics["train_loss_history"] = global_train_losses
+    metrics["val_loss_history"] = global_val_losses
+    metrics["eval_steps"] = global_val_steps
+
     mup_training_results[name] = metrics
 
     # Optional: Save the model weights so you can generate SVGs later
