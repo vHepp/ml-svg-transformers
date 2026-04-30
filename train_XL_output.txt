@@ -1,0 +1,370 @@
+./.cache
+Dataset({
+    features: ['Filename', 'Svg'],
+    num_rows: 300000
+})
+Cleaning datasets with multiprocessing...
+Done!
+300000
+filtered_train.num_rows: 204630
+Loaded tokenizer.json
+Flattening tokenized_dataset (PyArrow backend)...
+Done! Shape: (130428077,)
+len(np.unique(train_input_ids)): 940
+Preparing val and test dataset
+Number of tokens in data: 133084710
+Number of tokens in train: 130428077 -> 98.00%
+Number of tokens in val: 1355632 -> 1.02%
+Number of tokens in test: 1301001 -> 0.98%
+
+
+X Train shape: torch.Size([507502, 256]), Y Train shape: torch.Size([507502, 256])
+X Val shape: torch.Size([5274, 256]), Y Val shape: torch.Size([5274, 256])
+Lowest val_loss when lr = 0.01
+ Starting muP Training XL model with Best LR = 0.01
+ (1 Epoch = 1983 steps | Total = 39660 steps)
+Parameters: 44,248,552
+
+========================================
+Training XL Model for 20 Epochs
+========================================
+
+--- Epoch 1/20 ---
+Step 0000 | Train Loss: 6.8456 | Val Loss: 6.8462 | lr: 8.409014464e-07
+Step 0200 | Train Loss: 1.5017 | Val Loss: 1.4723 | lr: 1.690211907e-04
+Step 0400 | Train Loss: 1.0523 | Val Loss: 1.0399 | lr: 3.372014800e-04
+Step 0600 | Train Loss: 0.8422 | Val Loss: 0.8218 | lr: 5.053817693e-04
+Step 0800 | Train Loss: 0.6889 | Val Loss: 0.7075 | lr: 6.735620585e-04
+Step 1000 | Train Loss: 0.6501 | Val Loss: 0.6440 | lr: 8.417423478e-04
+Step 1200 | Train Loss: 0.6954 | Val Loss: 0.6810 | lr: 1.009922637e-03
+Step 1400 | Train Loss: 0.5931 | Val Loss: 0.6028 | lr: 1.178102926e-03
+Step 1600 | Train Loss: 0.5637 | Val Loss: 0.5686 | lr: 1.346283216e-03
+Step 1800 | Train Loss: 0.5385 | Val Loss: 0.5450 | lr: 1.514463505e-03
+Step 1982 | Train Loss: 1.3168 | Val Loss: 1.2914 | lr: 1.666666667e-03
+   Epoch Val Loss: 1.2914
+   Wall-clock time: 667.8 sec
+   Throughput: 194,564 tokens/sec
+   Peak GPU Memory: 26285.4 MB
+
+--- Epoch 2/20 ---
+Step 0000 | Train Loss: 1.2733 | Val Loss: 1.2747 | lr: 1.666666666e-03
+Step 0200 | Train Loss: 0.8854 | Val Loss: 0.8897 | lr: 1.666619852e-03
+Step 0400 | Train Loss: 0.8054 | Val Loss: 0.8007 | lr: 1.666480353e-03
+Step 0600 | Train Loss: 0.7982 | Val Loss: 0.7849 | lr: 1.666248207e-03
+Step 0800 | Train Loss: 0.7406 | Val Loss: 0.7414 | lr: 1.665923477e-03
+Step 1000 | Train Loss: 0.7620 | Val Loss: 0.7619 | lr: 1.665506256e-03
+Step 1200 | Train Loss: 0.6473 | Val Loss: 0.6625 | lr: 1.664996657e-03
+Step 1400 | Train Loss: 0.5877 | Val Loss: 0.6078 | lr: 1.664394824e-03
+Step 1600 | Train Loss: 0.5636 | Val Loss: 0.5745 | lr: 1.663700924e-03
+Step 1800 | Train Loss: 0.5690 | Val Loss: 0.5497 | lr: 1.662915149e-03
+Step 1982 | Train Loss: 0.5250 | Val Loss: 0.5347 | lr: 1.662120434e-03
+   Epoch Val Loss: 0.5347
+   Wall-clock time: 664.7 sec
+   Throughput: 195,468 tokens/sec
+   Peak GPU Memory: 26283.6 MB
+
+--- Epoch 3/20 ---
+Step 0000 | Train Loss: 0.5401 | Val Loss: 0.5333 | lr: 1.662115859e-03
+Step 0200 | Train Loss: 0.5273 | Val Loss: 0.5211 | lr: 1.661154776e-03
+Step 0400 | Train Loss: 0.5149 | Val Loss: 0.5115 | lr: 1.660102527e-03
+Step 0600 | Train Loss: 0.4813 | Val Loss: 0.5024 | lr: 1.658959404e-03
+Step 0800 | Train Loss: 0.5806 | Val Loss: 0.5691 | lr: 1.657725726e-03
+Step 1000 | Train Loss: 0.5157 | Val Loss: 0.5009 | lr: 1.656401835e-03
+Step 1200 | Train Loss: 0.5065 | Val Loss: 0.4898 | lr: 1.654988099e-03
+Step 1400 | Train Loss: 0.4876 | Val Loss: 0.4815 | lr: 1.653484912e-03
+Step 1600 | Train Loss: 0.4651 | Val Loss: 0.4735 | lr: 1.651892692e-03
+Step 1800 | Train Loss: 0.4672 | Val Loss: 0.4692 | lr: 1.650211881e-03
+Step 1982 | Train Loss: 0.4709 | Val Loss: 0.4660 | lr: 1.648605747e-03
+   Epoch Val Loss: 0.4660
+   Wall-clock time: 664.4 sec
+   Throughput: 195,534 tokens/sec
+   Peak GPU Memory: 26283.6 MB
+
+--- Epoch 4/20 ---
+Step 0000 | Train Loss: 0.4410 | Val Loss: 0.4669 | lr: 1.648596721e-03
+Step 0200 | Train Loss: 0.4410 | Val Loss: 0.4627 | lr: 1.646747585e-03
+Step 0400 | Train Loss: 0.4570 | Val Loss: 0.4567 | lr: 1.644811289e-03
+Step 0600 | Train Loss: 0.4582 | Val Loss: 0.4536 | lr: 1.642788372e-03
+Step 0800 | Train Loss: 0.4563 | Val Loss: 0.4489 | lr: 1.640679396e-03
+Step 1000 | Train Loss: 0.4433 | Val Loss: 0.4470 | lr: 1.638484948e-03
+Step 1200 | Train Loss: 0.4506 | Val Loss: 0.4434 | lr: 1.636205638e-03
+Step 1400 | Train Loss: 0.4354 | Val Loss: 0.4408 | lr: 1.633842100e-03
+Step 1600 | Train Loss: 0.4337 | Val Loss: 0.4380 | lr: 1.631394991e-03
+Step 1800 | Train Loss: 0.4285 | Val Loss: 0.4361 | lr: 1.628864992e-03
+Step 1982 | Train Loss: 0.4388 | Val Loss: 0.4338 | lr: 1.626491250e-03
+   Epoch Val Loss: 0.4338
+   Wall-clock time: 664.4 sec
+   Throughput: 195,558 tokens/sec
+   Peak GPU Memory: 26283.4 MB
+
+--- Epoch 5/20 ---
+Step 0000 | Train Loss: 0.4023 | Val Loss: 0.4344 | lr: 1.626478021e-03
+Step 0200 | Train Loss: 0.4352 | Val Loss: 0.4322 | lr: 1.623791270e-03
+Step 0400 | Train Loss: 0.4193 | Val Loss: 0.4302 | lr: 1.621023745e-03
+Step 0600 | Train Loss: 0.4150 | Val Loss: 0.4295 | lr: 1.618176213e-03
+Step 0800 | Train Loss: 0.4330 | Val Loss: 0.4277 | lr: 1.615249467e-03
+Step 1000 | Train Loss: 0.4334 | Val Loss: 0.4244 | lr: 1.612244320e-03
+Step 1200 | Train Loss: 0.4382 | Val Loss: 0.4229 | lr: 1.609161610e-03
+Step 1400 | Train Loss: 0.4275 | Val Loss: 0.4222 | lr: 1.606002192e-03
+Step 1600 | Train Loss: 0.4294 | Val Loss: 0.4196 | lr: 1.602766946e-03
+Step 1800 | Train Loss: 0.4156 | Val Loss: 0.4219 | lr: 1.599456770e-03
+Step 1982 | Train Loss: 0.4020 | Val Loss: 0.4185 | lr: 1.596380170e-03
+   Epoch Val Loss: 0.4185
+   Wall-clock time: 664.4 sec
+   Throughput: 195,550 tokens/sec
+   Peak GPU Memory: 26283.4 MB
+
+--- Epoch 6/20 ---
+Step 0000 | Train Loss: 0.4157 | Val Loss: 0.4189 | lr: 1.596363097e-03
+Step 0200 | Train Loss: 0.4106 | Val Loss: 0.4166 | lr: 1.592912021e-03
+Step 0400 | Train Loss: 0.4158 | Val Loss: 0.4152 | lr: 1.589388755e-03
+Step 0600 | Train Loss: 0.4097 | Val Loss: 0.4153 | lr: 1.585794282e-03
+Step 0800 | Train Loss: 0.4063 | Val Loss: 0.4126 | lr: 1.582129600e-03
+Step 1000 | Train Loss: 0.4001 | Val Loss: 0.4113 | lr: 1.578395728e-03
+Step 1200 | Train Loss: 0.4183 | Val Loss: 0.4103 | lr: 1.574593705e-03
+Step 1400 | Train Loss: 0.4213 | Val Loss: 0.4084 | lr: 1.570724588e-03
+Step 1600 | Train Loss: 0.3949 | Val Loss: 0.4091 | lr: 1.566789453e-03
+Step 1800 | Train Loss: 0.3948 | Val Loss: 0.4074 | lr: 1.562789395e-03
+Step 1982 | Train Loss: 0.4171 | Val Loss: 0.4065 | lr: 1.559093857e-03
+   Epoch Val Loss: 0.4065
+   Wall-clock time: 664.4 sec
+   Throughput: 195,551 tokens/sec
+   Peak GPU Memory: 26283.4 MB
+
+--- Epoch 7/20 ---
+Step 0000 | Train Loss: 0.4133 | Val Loss: 0.4066 | lr: 1.559073408e-03
+Step 0200 | Train Loss: 0.4099 | Val Loss: 0.4076 | lr: 1.554952141e-03
+Step 0400 | Train Loss: 0.3821 | Val Loss: 0.4058 | lr: 1.550769242e-03
+Step 0600 | Train Loss: 0.3804 | Val Loss: 0.4046 | lr: 1.546525875e-03
+Step 0800 | Train Loss: 0.4133 | Val Loss: 0.4066 | lr: 1.542223220e-03
+Step 1000 | Train Loss: 0.4111 | Val Loss: 0.4033 | lr: 1.537862472e-03
+Step 1200 | Train Loss: 0.3925 | Val Loss: 0.4014 | lr: 1.533444846e-03
+Step 1400 | Train Loss: 0.3793 | Val Loss: 0.3994 | lr: 1.528971570e-03
+Step 1600 | Train Loss: 0.4040 | Val Loss: 0.3988 | lr: 1.524443886e-03
+Step 1800 | Train Loss: 0.4061 | Val Loss: 0.3976 | lr: 1.519863056e-03
+Step 1982 | Train Loss: 0.3692 | Val Loss: 0.3990 | lr: 1.515649386e-03
+   Epoch Val Loss: 0.3990
+   Wall-clock time: 664.3 sec
+   Throughput: 195,577 tokens/sec
+   Peak GPU Memory: 26283.4 MB
+
+--- Epoch 8/20 ---
+Step 0000 | Train Loss: 0.3761 | Val Loss: 0.3996 | lr: 1.515626117e-03
+Step 0200 | Train Loss: 0.3841 | Val Loss: 0.3988 | lr: 1.510947077e-03
+Step 0400 | Train Loss: 0.3939 | Val Loss: 0.3970 | lr: 1.506218644e-03
+Step 0600 | Train Loss: 0.3783 | Val Loss: 0.3975 | lr: 1.501442131e-03
+Step 0800 | Train Loss: 0.3847 | Val Loss: 0.3965 | lr: 1.496618868e-03
+Step 1000 | Train Loss: 0.3951 | Val Loss: 0.3951 | lr: 1.491750195e-03
+Step 1200 | Train Loss: 0.3920 | Val Loss: 0.3948 | lr: 1.486837467e-03
+Step 1400 | Train Loss: 0.4080 | Val Loss: 0.3942 | lr: 1.481882050e-03
+Step 1600 | Train Loss: 0.3716 | Val Loss: 0.3935 | lr: 1.476885322e-03
+Step 1800 | Train Loss: 0.3807 | Val Loss: 0.3934 | lr: 1.471848672e-03
+Step 1982 | Train Loss: 0.3641 | Val Loss: 0.3929 | lr: 1.467231808e-03
+   Epoch Val Loss: 0.3929
+   Wall-clock time: 664.2 sec
+   Throughput: 195,593 tokens/sec
+   Peak GPU Memory: 26283.4 MB
+
+--- Epoch 9/20 ---
+Step 0000 | Train Loss: 0.3435 | Val Loss: 0.3940 | lr: 1.467206355e-03
+Step 0200 | Train Loss: 0.3652 | Val Loss: 0.3926 | lr: 1.462097174e-03
+Step 0400 | Train Loss: 0.3925 | Val Loss: 0.3929 | lr: 1.456952185e-03
+Step 0600 | Train Loss: 0.3867 | Val Loss: 0.3927 | lr: 1.451772817e-03
+Step 0800 | Train Loss: 0.3673 | Val Loss: 0.3914 | lr: 1.446560512e-03
+Step 1000 | Train Loss: 0.3845 | Val Loss: 0.3906 | lr: 1.441316719e-03
+Step 1200 | Train Loss: 0.3818 | Val Loss: 0.3908 | lr: 1.436042895e-03
+Step 1400 | Train Loss: 0.3956 | Val Loss: 0.3898 | lr: 1.430740509e-03
+Step 1600 | Train Loss: 0.3964 | Val Loss: 0.3889 | lr: 1.425411034e-03
+Step 1800 | Train Loss: 0.3877 | Val Loss: 0.3884 | lr: 1.420055952e-03
+Step 1982 | Train Loss: 0.3908 | Val Loss: 0.3876 | lr: 1.415161829e-03
+   Epoch Val Loss: 0.3876
+   Wall-clock time: 664.1 sec
+   Throughput: 195,619 tokens/sec
+   Peak GPU Memory: 26283.4 MB
+
+--- Epoch 10/20 ---
+Step 0000 | Train Loss: 0.4038 | Val Loss: 0.3880 | lr: 1.415134885e-03
+Step 0200 | Train Loss: 0.3713 | Val Loss: 0.3889 | lr: 1.409734929e-03
+Step 0400 | Train Loss: 0.3871 | Val Loss: 0.3889 | lr: 1.404313726e-03
+Step 0600 | Train Loss: 0.3860 | Val Loss: 0.3881 | lr: 1.398872783e-03
+Step 0800 | Train Loss: 0.3540 | Val Loss: 0.3877 | lr: 1.393413614e-03
+Step 1000 | Train Loss: 0.3790 | Val Loss: 0.3869 | lr: 1.387937737e-03
+Step 1200 | Train Loss: 0.3762 | Val Loss: 0.3862 | lr: 1.382446674e-03
+Step 1400 | Train Loss: 0.3649 | Val Loss: 0.3865 | lr: 1.376941954e-03
+Step 1600 | Train Loss: 0.3770 | Val Loss: 0.3852 | lr: 1.371425105e-03
+Step 1800 | Train Loss: 0.3598 | Val Loss: 0.3850 | lr: 1.365897664e-03
+Step 1982 | Train Loss: 0.3847 | Val Loss: 0.3849 | lr: 1.360859782e-03
+   Epoch Val Loss: 0.3849
+   Wall-clock time: 664.2 sec
+   Throughput: 195,611 tokens/sec
+   Peak GPU Memory: 26283.4 MB
+
+--- Epoch 11/20 ---
+Step 0000 | Train Loss: 0.3676 | Val Loss: 0.3850 | lr: 1.360832083e-03
+Step 0200 | Train Loss: 0.3666 | Val Loss: 0.3870 | lr: 1.355288648e-03
+Step 0400 | Train Loss: 0.3521 | Val Loss: 0.3849 | lr: 1.349739107e-03
+Step 0600 | Train Loss: 0.3574 | Val Loss: 0.3854 | lr: 1.344185004e-03
+Step 0800 | Train Loss: 0.3669 | Val Loss: 0.3844 | lr: 1.338627883e-03
+Step 1000 | Train Loss: 0.3752 | Val Loss: 0.3838 | lr: 1.333069290e-03
+Step 1200 | Train Loss: 0.3785 | Val Loss: 0.3847 | lr: 1.327510770e-03
+Step 1400 | Train Loss: 0.3590 | Val Loss: 0.3824 | lr: 1.321953869e-03
+Step 1600 | Train Loss: 0.3744 | Val Loss: 0.3813 | lr: 1.316400133e-03
+Step 1800 | Train Loss: 0.3733 | Val Loss: 0.3814 | lr: 1.310851106e-03
+Step 1982 | Train Loss: 0.3734 | Val Loss: 0.3819 | lr: 1.305806885e-03
+   Epoch Val Loss: 0.3819
+   Wall-clock time: 664.3 sec
+   Throughput: 195,575 tokens/sec
+   Peak GPU Memory: 26283.4 MB
+
+--- Epoch 12/20 ---
+Step 0000 | Train Loss: 0.3518 | Val Loss: 0.3821 | lr: 1.305779186e-03
+Step 0200 | Train Loss: 0.3587 | Val Loss: 0.3832 | lr: 1.300243482e-03
+Step 0400 | Train Loss: 0.3651 | Val Loss: 0.3841 | lr: 1.294716981e-03
+Step 0600 | Train Loss: 0.3423 | Val Loss: 0.3833 | lr: 1.289201219e-03
+Step 0800 | Train Loss: 0.3761 | Val Loss: 0.3816 | lr: 1.283697730e-03
+Step 1000 | Train Loss: 0.3519 | Val Loss: 0.3812 | lr: 1.278208045e-03
+Step 1200 | Train Loss: 0.3704 | Val Loss: 0.3804 | lr: 1.272733689e-03
+Step 1400 | Train Loss: 0.3516 | Val Loss: 0.3813 | lr: 1.267276187e-03
+Step 1600 | Train Loss: 0.3486 | Val Loss: 0.3801 | lr: 1.261837054e-03
+Step 1800 | Train Loss: 0.3556 | Val Loss: 0.3801 | lr: 1.256417805e-03
+Step 1982 | Train Loss: 0.3539 | Val Loss: 0.3800 | lr: 1.251504838e-03
+   Epoch Val Loss: 0.3800
+   Wall-clock time: 664.3 sec
+   Throughput: 195,565 tokens/sec
+   Peak GPU Memory: 26283.4 MB
+
+--- Epoch 13/20 ---
+Step 0000 | Train Loss: 0.3612 | Val Loss: 0.3807 | lr: 1.251477894e-03
+Step 0200 | Train Loss: 0.3633 | Val Loss: 0.3823 | lr: 1.246100922e-03
+Step 0400 | Train Loss: 0.3561 | Val Loss: 0.3811 | lr: 1.240748209e-03
+Step 0600 | Train Loss: 0.3519 | Val Loss: 0.3809 | lr: 1.235421243e-03
+Step 0800 | Train Loss: 0.3562 | Val Loss: 0.3808 | lr: 1.230121507e-03
+Step 1000 | Train Loss: 0.3784 | Val Loss: 0.3804 | lr: 1.224850474e-03
+Step 1200 | Train Loss: 0.3528 | Val Loss: 0.3796 | lr: 1.219609609e-03
+Step 1400 | Train Loss: 0.3455 | Val Loss: 0.3797 | lr: 1.214400371e-03
+Step 1600 | Train Loss: 0.3760 | Val Loss: 0.3790 | lr: 1.209224208e-03
+Step 1800 | Train Loss: 0.3498 | Val Loss: 0.3784 | lr: 1.204082559e-03
+Step 1982 | Train Loss: 0.3275 | Val Loss: 0.3782 | lr: 1.199434858e-03
+   Epoch Val Loss: 0.3782
+   Wall-clock time: 664.3 sec
+   Throughput: 195,586 tokens/sec
+   Peak GPU Memory: 26283.4 MB
+
+--- Epoch 14/20 ---
+Step 0000 | Train Loss: 0.3322 | Val Loss: 0.3790 | lr: 1.199409406e-03
+Step 0200 | Train Loss: 0.3470 | Val Loss: 0.3815 | lr: 1.194337835e-03
+Step 0400 | Train Loss: 0.3401 | Val Loss: 0.3805 | lr: 1.189304918e-03
+Step 0600 | Train Loss: 0.3574 | Val Loss: 0.3803 | lr: 1.184312054e-03
+Step 0800 | Train Loss: 0.3498 | Val Loss: 0.3798 | lr: 1.179360634e-03
+Step 1000 | Train Loss: 0.3487 | Val Loss: 0.3791 | lr: 1.174452033e-03
+Step 1200 | Train Loss: 0.3526 | Val Loss: 0.3787 | lr: 1.169587616e-03
+Step 1400 | Train Loss: 0.3557 | Val Loss: 0.3798 | lr: 1.164768736e-03
+Step 1600 | Train Loss: 0.3561 | Val Loss: 0.3782 | lr: 1.159996734e-03
+Step 1800 | Train Loss: 0.3553 | Val Loss: 0.3772 | lr: 1.155272937e-03
+Step 1982 | Train Loss: 0.3523 | Val Loss: 0.3767 | lr: 1.151017281e-03
+   Epoch Val Loss: 0.3767
+   Wall-clock time: 664.3 sec
+   Throughput: 195,562 tokens/sec
+   Peak GPU Memory: 26283.4 MB
+
+--- Epoch 15/20 ---
+Step 0000 | Train Loss: 0.3278 | Val Loss: 0.3774 | lr: 1.150994013e-03
+Step 0200 | Train Loss: 0.3410 | Val Loss: 0.3814 | lr: 1.146366182e-03
+Step 0400 | Train Loss: 0.3468 | Val Loss: 0.3805 | lr: 1.141790346e-03
+Step 0600 | Train Loss: 0.3516 | Val Loss: 0.3793 | lr: 1.137267777e-03
+Step 0800 | Train Loss: 0.3363 | Val Loss: 0.3804 | lr: 1.132799734e-03
+Step 1000 | Train Loss: 0.3371 | Val Loss: 0.3789 | lr: 1.128387459e-03
+Step 1200 | Train Loss: 0.3392 | Val Loss: 0.3788 | lr: 1.124032179e-03
+Step 1400 | Train Loss: 0.3488 | Val Loss: 0.3777 | lr: 1.119735105e-03
+Step 1600 | Train Loss: 0.3470 | Val Loss: 0.3774 | lr: 1.115497432e-03
+Step 1800 | Train Loss: 0.3456 | Val Loss: 0.3780 | lr: 1.111320338e-03
+Step 1982 | Train Loss: 0.3374 | Val Loss: 0.3791 | lr: 1.107572809e-03
+   Epoch Val Loss: 0.3791
+   Wall-clock time: 664.3 sec
+   Throughput: 195,564 tokens/sec
+   Peak GPU Memory: 26283.4 MB
+
+--- Epoch 16/20 ---
+Step 0000 | Train Loss: 0.3377 | Val Loss: 0.3804 | lr: 1.107552361e-03
+Step 0200 | Train Loss: 0.3343 | Val Loss: 0.3823 | lr: 1.103494506e-03
+Step 0400 | Train Loss: 0.3237 | Val Loss: 0.3817 | lr: 1.099500567e-03
+Step 0600 | Train Loss: 0.3436 | Val Loss: 0.3814 | lr: 1.095571658e-03
+Step 0800 | Train Loss: 0.3392 | Val Loss: 0.3802 | lr: 1.091708869e-03
+Step 1000 | Train Loss: 0.3241 | Val Loss: 0.3813 | lr: 1.087913275e-03
+Step 1200 | Train Loss: 0.3441 | Val Loss: 0.3796 | lr: 1.084185932e-03
+Step 1400 | Train Loss: 0.3237 | Val Loss: 0.3795 | lr: 1.080527876e-03
+Step 1600 | Train Loss: 0.3332 | Val Loss: 0.3776 | lr: 1.076940124e-03
+Step 1800 | Train Loss: 0.3414 | Val Loss: 0.3791 | lr: 1.073423675e-03
+Step 1982 | Train Loss: 0.3070 | Val Loss: 0.3782 | lr: 1.070286497e-03
+   Epoch Val Loss: 0.3782
+   Wall-clock time: 664.3 sec
+   Throughput: 195,582 tokens/sec
+   Peak GPU Memory: 26283.4 MB
+
+--- Epoch 17/20 ---
+Step 0000 | Train Loss: 0.3156 | Val Loss: 0.3798 | lr: 1.070269426e-03
+Step 0200 | Train Loss: 0.3493 | Val Loss: 0.3839 | lr: 1.066892234e-03
+Step 0400 | Train Loss: 0.3190 | Val Loss: 0.3814 | lr: 1.063589137e-03
+Step 0600 | Train Loss: 0.3286 | Val Loss: 0.3809 | lr: 1.060361056e-03
+Step 0800 | Train Loss: 0.3252 | Val Loss: 0.3817 | lr: 1.057208888e-03
+Step 1000 | Train Loss: 0.3327 | Val Loss: 0.3813 | lr: 1.054133510e-03
+Step 1200 | Train Loss: 0.3470 | Val Loss: 0.3796 | lr: 1.051135776e-03
+Step 1400 | Train Loss: 0.3323 | Val Loss: 0.3800 | lr: 1.048216521e-03
+Step 1600 | Train Loss: 0.3464 | Val Loss: 0.3803 | lr: 1.045376556e-03
+Step 1800 | Train Loss: 0.3228 | Val Loss: 0.3803 | lr: 1.042616671e-03
+Step 1982 | Train Loss: 0.3583 | Val Loss: 0.3787 | lr: 1.040175416e-03
+   Epoch Val Loss: 0.3787
+   Wall-clock time: 664.3 sec
+   Throughput: 195,589 tokens/sec
+   Peak GPU Memory: 26283.4 MB
+
+--- Epoch 18/20 ---
+Step 0000 | Train Loss: 0.3058 | Val Loss: 0.3796 | lr: 1.040162189e-03
+Step 0200 | Train Loss: 0.3223 | Val Loss: 0.3845 | lr: 1.037557780e-03
+Step 0400 | Train Loss: 0.3428 | Val Loss: 0.3848 | lr: 1.035035626e-03
+Step 0600 | Train Loss: 0.3265 | Val Loss: 0.3827 | lr: 1.032596428e-03
+Step 0800 | Train Loss: 0.3440 | Val Loss: 0.3825 | lr: 1.030240863e-03
+Step 1000 | Train Loss: 0.3239 | Val Loss: 0.3820 | lr: 1.027969588e-03
+Step 1200 | Train Loss: 0.3176 | Val Loss: 0.3823 | lr: 1.025783234e-03
+Step 1400 | Train Loss: 0.3209 | Val Loss: 0.3826 | lr: 1.023682409e-03
+Step 1600 | Train Loss: 0.3241 | Val Loss: 0.3816 | lr: 1.021667697e-03
+Step 1800 | Train Loss: 0.3345 | Val Loss: 0.3832 | lr: 1.019739659e-03
+Step 1982 | Train Loss: 0.3270 | Val Loss: 0.3811 | lr: 1.018060919e-03
+   Epoch Val Loss: 0.3811
+   Wall-clock time: 664.3 sec
+   Throughput: 195,583 tokens/sec
+   Peak GPU Memory: 26283.4 MB
+
+--- Epoch 19/20 ---
+Step 0000 | Train Loss: 0.3162 | Val Loss: 0.3829 | lr: 1.018051896e-03
+Step 0200 | Train Loss: 0.3094 | Val Loss: 0.3881 | lr: 1.016291313e-03
+Step 0400 | Train Loss: 0.3052 | Val Loss: 0.3882 | lr: 1.014618898e-03
+Step 0600 | Train Loss: 0.3208 | Val Loss: 0.3859 | lr: 1.013035117e-03
+Step 0800 | Train Loss: 0.3363 | Val Loss: 0.3874 | lr: 1.011540411e-03
+Step 1000 | Train Loss: 0.3156 | Val Loss: 0.3862 | lr: 1.010135194e-03
+Step 1200 | Train Loss: 0.3124 | Val Loss: 0.3836 | lr: 1.008819858e-03
+Step 1400 | Train Loss: 0.3207 | Val Loss: 0.3842 | lr: 1.007594768e-03
+Step 1600 | Train Loss: 0.3335 | Val Loss: 0.3846 | lr: 1.006460265e-03
+Step 1800 | Train Loss: 0.3216 | Val Loss: 0.3826 | lr: 1.005416664e-03
+Step 1982 | Train Loss: 0.3435 | Val Loss: 0.3830 | lr: 1.004546232e-03
+   Epoch Val Loss: 0.3830
+   Wall-clock time: 664.3 sec
+   Throughput: 195,565 tokens/sec
+   Peak GPU Memory: 26283.4 MB
+
+--- Epoch 20/20 ---
+Step 0000 | Train Loss: 0.3159 | Val Loss: 0.3843 | lr: 1.004541659e-03
+Step 0200 | Train Loss: 0.3044 | Val Loss: 0.3914 | lr: 1.003672925e-03
+Step 0400 | Train Loss: 0.3138 | Val Loss: 0.3902 | lr: 1.002895870e-03
+Step 0600 | Train Loss: 0.3093 | Val Loss: 0.3891 | lr: 1.002210708e-03
+Step 0800 | Train Loss: 0.3192 | Val Loss: 0.3881 | lr: 1.001617630e-03
+Step 1000 | Train Loss: 0.3095 | Val Loss: 0.3873 | lr: 1.001116802e-03
+Step 1200 | Train Loss: 0.3237 | Val Loss: 0.3870 | lr: 1.000708362e-03
+Step 1400 | Train Loss: 0.3285 | Val Loss: 0.3854 | lr: 1.000392425e-03
+Step 1600 | Train Loss: 0.3067 | Val Loss: 0.3852 | lr: 1.000169078e-03
+Step 1800 | Train Loss: 0.3342 | Val Loss: 0.3870 | lr: 1.000038382e-03
+Step 1982 | Train Loss: 0.3236 | Val Loss: 0.3859 | lr: 1.000000000e-03
+   Epoch Val Loss: 0.3859
+   Wall-clock time: 664.2 sec
+   Throughput: 195,603 tokens/sec
+   Peak GPU Memory: 26283.4 MB

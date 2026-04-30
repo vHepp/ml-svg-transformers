@@ -26,6 +26,8 @@ import torch.nn.functional as F
 
 torch.manual_seed(42)
 
+torch.set_float32_matmul_precision('high')
+
 
 from torch.optim import AdamW
 from pl_bolts.optimizers.lr_scheduler import LinearWarmupCosineAnnealingLR
@@ -247,6 +249,7 @@ from tokenizers import Tokenizer, models, trainers, pre_tokenizers
 # %%
 try:
     tokenizer = Tokenizer.from_file("tokenizer.json")
+    print("Loaded tokenizer.json")
 except:
     print("No tokenizer found in root!")
 
@@ -297,26 +300,25 @@ def tokenize_svg(d):
 
 
 # %%
-tokenized_train = filtered_train.map(tokenize_svg)
+tokenized_train = filtered_train.map(tokenize_svg, num_proc=8)
 
 # %%
 # tokenized_train["input_ids"]
 
 
 # %%
-def flatten_input_ids(tokenized_dataset):
-    concat_arr = []
-
-    for arr in tqdm(tokenized_dataset["input_ids"]):
-        concat_arr.extend(arr)
-
-    return concat_arr
 
 
-train_input_ids = flatten_input_ids(tokenized_train)
-train_input_ids = np.array(train_input_ids)
+print("Flattening tokenized_dataset (PyArrow backend)...")
 
-len(train_input_ids)
+# .data accesses the PyArrow table
+# .combine_chunks() ensures the memory is contiguous
+# .flatten() removes the sub-lists instantaneously
+# .to_numpy() creates a zero-copy NumPy array
+train_input_ids = tokenized_train.data["input_ids"].combine_chunks().flatten().to_numpy()
+
+print(f"Done! Shape: {train_input_ids.shape}")
+
 
 # %%
 print(f"len(np.unique(train_input_ids)): {len(np.unique(train_input_ids))}")
@@ -326,16 +328,18 @@ print(f"len(np.unique(train_input_ids)): {len(np.unique(train_input_ids))}")
 #
 
 # %%
+print("Preparing val and test dataset")
+
 filtered_test = cleaned_test.filter(is_valid)
 # filtered_val = filtered_val.filter(valid_render)
-tokenized_test = filtered_test.map(tokenize_svg)
-test_input_ids = flatten_input_ids(tokenized_test)
+tokenized_test = filtered_test.map(tokenize_svg, num_proc=8)
+test_input_ids = tokenized_test.data["input_ids"].combine_chunks().flatten().to_numpy()
 test_input_ids = np.array(test_input_ids)
 
 filtered_val = cleaned_val.filter(is_valid)
 # filtered_val = filtered_val.filter(valid_render)
-tokenized_val = filtered_val.map(tokenize_svg)
-val_input_ids = flatten_input_ids(tokenized_val)
+tokenized_val = filtered_val.map(tokenize_svg, num_proc=8)
+val_input_ids = tokenized_val.data["input_ids"].combine_chunks().flatten().to_numpy()
 val_input_ids = np.array(val_input_ids)
 
 # %%
@@ -349,7 +353,7 @@ print(
     f"Number of tokens in val: {len(val_input_ids)} -> {(len(val_input_ids)/len(all_tokens)*100):.2f}%"
 )
 print(
-    f"Number of tokens in test: {len(test_input_ids)} -> {(len(test_input_ids)/len(all_tokens)*100):.2f}%"
+    f"Number of tokens in test: {len(test_input_ids)} -> {(len(test_input_ids)/len(all_tokens)*100):.2f}%\n\n"
 )
 
 # %% [markdown]
@@ -408,8 +412,19 @@ Y_val = val_data_2d[:, 1:]
 train_dataset = TensorDataset(X_train, Y_train)
 val_dataset = TensorDataset(X_val, Y_val)
 
-train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
-val_loader = DataLoader(val_dataset, batch_size=64)
+train_loader = DataLoader(
+    train_dataset,
+    batch_size=256,
+    shuffle=True,
+    num_workers = 4,
+    pin_memory=True
+)
+val_loader = DataLoader(
+    val_dataset,
+    batch_size=128,
+    num_workers = 4,
+    pin_memory=True
+)
 
 print(f"X Train shape: {X_train.shape}, Y Train shape: {Y_train.shape}")
 print(f"X Val shape: {X_val.shape}, Y Val shape: {Y_val.shape}")
@@ -461,7 +476,7 @@ def train_loop(
     if torch.cuda.is_available():
         torch.cuda.reset_peak_memory_stats(device)
 
-    for step in range(steps):
+    for step in tqdm(range(steps)):
         try:
             X, Y = next(train_iter)
         except StopIteration:
@@ -471,8 +486,12 @@ def train_loop(
         X, Y = X.to(device), Y.to(device)
         total_tokens_processed += X.numel()  # Batch_size * Sequence_length
 
-        _, loss = model(X, targets=Y)
-        optimizer.zero_grad()
+        # --- Wrap the forward pass in autocast ---
+        with torch.autocast(device_type="cuda", dtype=torch.bfloat16):
+            _, loss = model(X, targets=Y)
+
+        
+        optimizer.zero_grad(set_to_none=True)
         loss.backward()
         torch.nn.utils.clip_grad_norm_(
             model.parameters(), max_norm=1.0
@@ -521,6 +540,9 @@ def train_loop(
 # Keeping depth the same (n_layers, n_heads) and only varying width (d_model, d_ff)
 configs = {
     "Tiny": {"d_model": 128, "n_layers": 6, "n_heads": 6, "d_ff": 512},
+    "Small": {"d_model": 192, "n_layers": 6, "n_heads": 6, "d_ff": 768},
+    "Medium": {"d_model": 384, "n_layers": 6, "n_heads": 6, "d_ff": 1536},
+    "Large": {"d_model": 512, "n_layers": 6, "n_heads": 6, "d_ff": 2048},
     "XL": {"d_model": 768, "n_layers": 6, "n_heads": 6, "d_ff": 3072},
 }
 
@@ -562,7 +584,7 @@ class MuHead(nn.Module):
         self.head_size = head_size  # Store this
 
         # 'tril' is the lower triangular matrix for masking
-        self.register_buffer("tril", torch.tril(torch.ones(block_size, block_size)))
+        # self.register_buffer("tril", torch.tril(torch.ones(block_size, block_size)))
 
     def forward(self, x):
         B, T, C = x.shape  # Batch, sequence length, embedding dimensionality (d_model)
@@ -571,13 +593,19 @@ class MuHead(nn.Module):
         q = self.query(x)
         v = self.value(x)
 
-        # Compute attention scores
-        wei = q @ k.transpose(-2, -1) * (self.head_size**-1)
+        # # Compute attention scores
+        # wei = q @ k.transpose(-2, -1) * (self.head_size**-1)
 
-        # Mask out future tokens by replacing 0s in the tril matrix with -infinity
-        wei = wei.masked_fill(self.tril[:T, :T] == 0, float("-inf"))
+        # # Mask out future tokens by replacing 0s in the tril matrix with -infinity
+        # wei = wei.masked_fill(self.tril[:T, :T] == 0, float("-inf"))
 
-        output = F.softmax(wei, dim=-1) @ v
+        # output = F.softmax(wei, dim=-1) @ v
+
+        output = F.scaled_dot_product_attention(
+            q, k, v, 
+            is_causal=True, 
+            scale=1.0 / self.head_size 
+        )
 
         return output
 
@@ -729,7 +757,7 @@ print(f"Lowest val_loss when lr = {mu_best_lr}")
 mup_training_results = {}
 
 steps_per_epoch = len(train_loader)
-epochs = 50
+epochs = 20
 
 total_training_steps = steps_per_epoch * epochs
 
@@ -760,6 +788,9 @@ target_model.apply(
         else None
     )
 )
+
+# --- ADD THIS LINE ---
+# target_model = torch.compile(target_model)
 
 params = count_parameters(target_model)
 print(f"Parameters: {params:,}")
@@ -803,12 +834,12 @@ for epoch in range(epochs):
     mup_training_results[name] = metrics
 
     # Optional: Save the model weights so you can generate SVGs later
-    torch.save(target_model.state_dict(), f"mu_model_XL_best.pt")
+    torch.save(target_model.state_dict(), f"mu_model_{name}_best.pt")
 
 # %%
 import matplotlib.pyplot as plt
 
-# Extract metrics from your XL model results
+# Extract metrics from your model results
 metrics = mup_training_results[name]
 train_losses = metrics["train_loss_history"]
 val_losses = metrics["val_loss_history"]
@@ -835,4 +866,5 @@ plt.xlabel("Training Steps")
 plt.ylabel("Cross-Entropy Loss")
 plt.legend()
 plt.grid(True, alpha=0.5)
+plt.savefig(f"{name}_training_loss.png")
 plt.show()
