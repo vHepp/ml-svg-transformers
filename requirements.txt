@@ -1,12 +1,15 @@
+ipykernel
+jupyter
+ipywidgets
 numpy
 pandas
 matplotlib
-datasets
 lightning-bolts
 lxml
 cairosvg
 tqdm
-tokenizers
 torch
+datasets
+tokenizers
 scipy
 mup
