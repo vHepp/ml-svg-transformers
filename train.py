@@ -683,31 +683,41 @@ class MuCustomTransformer(nn.Module):
         self.ln_f = nn.LayerNorm(d_model)
         self.proj = mup.MuReadout(d_model, vocab_size)
 
-    def generate(self, idx, max_new_tokens, temperature=0.8):
-        # idx.shape (B,T)
-
+    @torch.inference_mode()
+    def generate(self, idx, max_new_tokens, temperature=1.0, top_k=None, eot_id=None):
+        """
+        Takes a conditioning sequence of indices idx (LongTensor of shape (b,t)) and completes
+        the sequence max_new_tokens times, feeding the predictions back into the model each time.
+        """
         for _ in range(max_new_tokens):
+            # If the sequence context is growing too long, crop it to block_size
+            idx_cond = (
+                idx if idx.size(1) <= self.block_size else idx[:, -self.block_size :]
+            )
 
-            # Crop to block_size if too long
-            if idx.size(1) <= self.block_size:
-                idx_continue = idx
-            else:
-                idx_continue = idx[:, -self.block_size :]
+            # Forward pass to get logits
+            logits, _ = self(idx_cond)
 
-            # forward into model.
-            logits, _ = self(idx_continue)
-
-            # Get the final step logits
+            # Pluck the logits at the final step and apply temperature
             logits = logits[:, -1, :] / temperature
 
+            # Optionally crop the logits to only the top k options
+            if top_k is not None:
+                v, _ = torch.topk(logits, min(top_k, logits.size(-1)))
+                logits[logits < v[:, [-1]]] = -float("Inf")
+
+            # Apply softmax to convert to probabilities
             probs = F.softmax(logits, dim=-1)
 
-            # sample randomly from the distribution
-            # print(probs.shape)
+            # Sample from the distribution
             idx_next = torch.multinomial(probs, num_samples=1)
 
-            # append the new index to the sequence and continue
-            idx = torch.concat((idx, idx_next), dim=1)
+            # Append the sampled index to the running sequence
+            idx = torch.cat((idx, idx_next), dim=1)
+
+            # --- EARLY STOPPING CONDITION ---
+            if eot_id is not None and idx_next.item() == eot_id:
+                break
 
         return idx
 
@@ -749,12 +759,12 @@ print(f"Lowest val_loss when lr = {mu_best_lr}")
 mup_training_results = {}
 
 steps_per_epoch = len(train_loader)
-epochs = 10
+epochs = 20
 
 total_training_steps = steps_per_epoch * epochs
 
 
-name = "Tiny"  # Explicitly defining the name for your print statements and saving
+name = "XL"  # Explicitly defining the name for your print statements and saving
 
 print(
     f" Starting muP Training {name} model with Best LR = {mu_best_lr}\n"
