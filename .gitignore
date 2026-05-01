@@ -10,6 +10,22 @@ __pycache__/
 
 .vscode
 
+
+# Latex other files
+*.aux
+*.bbl
+*.bcf
+*.fdb_latexmk
+*.fls
+*.out
+*.run.xml
+*.synctex.gz
+
+
+
+
+
+
 # Distribution / packaging
 .Python
 build/

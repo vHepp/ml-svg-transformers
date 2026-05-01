@@ -1,0 +1,475 @@
+\documentclass[11pt]{article}
+%\documentclass[a4paper,11pt,twocolumn]{article}%twocolumn layout; not sure if this works correctly. Feel free to experiment.
+\usepackage[pdftex]{color,graphicx}
+\usepackage[T1]{fontenc}
+\usepackage{pxfonts}
+% \usepackage{subfigure}
+\usepackage{xcolor}
+
+\usepackage{svg}
+
+%color links to figs, etc.
+%\usepackage[pdftex,colorlinks,urlcolor=blue,breaklinks]{hyperref}
+\usepackage[pdftex,colorlinks]{hyperref}
+\hypersetup{colorlinks,%
+		    citecolor=black,%
+		    filecolor=black,%
+		    linkcolor=black,%
+		    urlcolor=black,%
+		    breaklinks=true,%
+		    pdftex}
+		    
+%easily manipulate margins
+\usepackage{geometry}
+\makeatletter
+\if@twocolumn%
+	\geometry{twoside,
+		paperwidth=210mm,
+  		paperheight=297mm,
+  		textheight=682pt,
+  		textwidth=516pt,
+  		centering,
+  		headheight=50pt,
+  		headsep=12pt,
+  		footskip=18pt,
+  		footnotesep=24pt plus 2pt minus 12pt,
+ 		columnsep=14pt}	
+\else%if using twocolumns, I still need to modify the textwidth to accomodate the watermark
+	\geometry{twoside,
+		  paperwidth=210mm,
+		  paperheight=297mm,
+		  textheight=750pt,
+		  textwidth=500pt,
+		  centering,
+		  headheight=50pt,
+		  headsep=12pt,
+		  footskip=18pt,
+		  footnotesep=24pt plus 2pt minus 12pt}
+\fi%
+
+
+%change the font
+\usepackage{charter}
+
+%CC logos to add in the footer
+% \usepackage{ccicons}
+
+%easily manipulate color
+\usepackage{color}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{xcolor}         % colors
+\usepackage{amsmath}
+\usepackage{algorithmicx}
+\usepackage{algorithm, algpseudocode}
+\usepackage{graphicx}
+\usepackage{adjustbox}
+\usepackage{mathrsfs}
+
+\usepackage{subcaption}
+
+%nicely print bioRxiv
+
+%add biorxiv type of article using the package background
+
+
+%enhanced floats
+\usepackage{float}
+
+%rotate floats if necessary
+\usepackage{rotating}
+
+%nicer, clever tables, uncomment if necessary
+\usepackage{supertabular}
+
+%tables with notes, etc., uncomment if necessary
+%\usepackage{threeparttable}
+
+%improved captions, uncomment if necessary
+\usepackage{caption}
+
+
+%add nice headers
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0pt}
+\lhead{{\footnotesize }}
+\chead{}
+\rhead{{\footnotesize }}
+\lfoot{\ccbynd}
+\cfoot{\thepage}
+
+
+%flushleft the title, authorblock and Abstract
+%modified from http://tex.stackexchange.com/questions/85343/left-align-abstract-title-and-authors
+\makeatletter
+\renewcommand{\maketitle}{\bgroup\setlength{\parindent}{0pt}
+\begin{flushleft}
+  \thispagestyle{plain}
+  \textbf{\@title}
+
+  \@author
+\end{flushleft}\egroup
+}
+\makeatother
+
+%redefine the abstract
+\renewenvironment{abstract}
+ {\small
+  \begin{flushleft}
+  \textbf{\abstractname}\vspace{-0.40em}\vspace{0pt}
+  \end{flushleft}
+  \list{}{
+    \setlength{\leftmargin}{0cm}%
+    \setlength{\rightmargin}{\leftmargin}%
+  }%
+  \item\relax}
+ {\endlist}
+
+\hyphenation{}
+
+\renewcommand*{\thefootnote}{\fnsymbol{footnote}}
+
+%if to do notes need to be added: need to configure this!
+\usepackage[colorinlistoftodos]{todonotes}
+
+%feel free to change the reference style to suit your needs
+% \usepackage[firstinits=true, backref=false, maxcitenames=1,  hyperref=auto, style=authoryear, defernumbers=true, backend=bibtex]{biblatex}[2010/11-19]
+\usepackage[style=numeric,sorting=nyt]{biblatex}
+
+%change the name of this file to point to your bib file.
+% \bibliography{./Bibliography/refs}
+\addbibresource{./Bibliography/refs.bib} %Import the bibliography file
+
+\newcommand{\yz}[1]{{\color{blue}[Yizi: #1]}}
+
+\definecolor{dodgerblue}{rgb}{0.12, 0.56, 1.0}
+\definecolor{lightseagreen}{rgb}{0.13, 0.7, 0.67}
+\definecolor{mediumorchid}{rgb}{0.73, 0.33, 0.83}
+\definecolor{electriclavender}{rgb}{0.96, 0.73, 1.0}
+\definecolor{royalazure}{rgb}{0.0, 0.22, 0.66}
+\definecolor{cadetgrey}{rgb}{0.57, 0.64, 0.69}
+\definecolor{applegreen}{rgb}{0.55, 0.71, 0.0}
+\definecolor{darkpastelpurple}{rgb}{0.59, 0.44, 0.84}
+\definecolor{purpleheart}{rgb}{0.41, 0.21, 0.61}
+
+
+
+\begin{document}
+
+%always keep the \newline command at the end of the title to add space between the title and the authors
+\title{\Large Neuroinformatics - Project 1 (The Synapses)
+	\newline}
+\author{Vincent Hepola, vh2308@nyu.edu, Ryan Fleishman, rmf9265@nyu.edu, Jasmine Jin, xj2091@nyu.edu}
+
+
+
+\date{}
+
+\maketitle
+%\tableofcontents
+
+
+\section{Introduction and background}
+Magnetic resonance imaging (MRI) is a cornerstone of clinical and research imaging. Its spatial resolution is directly proportional to the
+main magnetic field strength: conventional clinical systems operating at 3T. However, these machines are massive, expensive, and difficult to transport.
+Ultra-low-field systems such as 64 mT offer substantially lower cost, smaller footprint, and greater accessibility but suffer from vastly reduced image quality.
+Hence, improving these low-field MRI scans to match the resolution of 3T scans via super-resolution techniques is essential to bridge the gap between low-field availability
+and high-field quality. A system  translates low- to high-field MRI scans would vastly improve our ability to scan and treat patients who lack strong local medical services, especially in rural clinics, bedside scanning, and impoverished foreign countries.
+
+The Super-Resolution (SR) problem has several fundamental barriers. Traditional SR methods require massive paired datasets for training, which are difficult to acquire for MRIs across
+different Teslas, combined with privacy concerns for patient medical data. Hallucinated features are unacceptable for this application, given a false positive in
+brain imaging can cause disastrous miscalls on medical issues.
+
+Deep learning approaches that leverage new techniques, namely Generative Adversarial Networks (GANs), diffusion models, and incorporation of physics models,
+have excelled at tackling these barriers towards effective SR.
+
+Rethinking Diffusion Model for Multi-Contrast MRI Super-Resolution \cite{diffmsr} leverages latent priors extracted from high-resolution images to create a diffusion model
+enhanced by transformers, named DiffMSR, to work across varying contrasts. DiffMSR compresses latent features into a compressed latent space before the diffusion model
+outputs effective prior knowledge to guide super-resolution. The latent space is learned from paired low resolution(LR) - high resolution(HR) reference data,
+where HR reference data are encoded to extract priors. The diffusion process is conditioned on these latent space, and the resulting priors guides the decoder, a
+Prior-Guide Large Window Transformer (PLWformer), to reconstruct a higher-resolution images with enhanced details.
+
+Although the paper suggested promising results, the absence of
+HR references significantly limited the effectiveness of this prior-guided mechanism. During our attempts, we implemented most of the architecture, including dual encoders
+and a denoising MLP module, trained it in staged phases to stabilize convergence. We directly leveraged the ground truth high-field to learn a compact latent prior
+via the paper's Prior Extraction model. We experimented with reducing diffusion steps, adjusting latent dimensionality, and tuning learning rates and loss weights.
+The model exhibited unstable convergence and produced minimal improvements in trilinear interpolation with PSNR and SSIM values plateauing below the competition baseline.
+Consequently, our final model is a more straightforward CNN ResNet with skip connections executed through the U-Net3D architecture.
+
+
+\section{Datasets}
+
+\subsection{Preprocessing}
+
+% \textit{Describe the preprocessing steps used for your data. Generate some figures to illustrate what your data looks like, what kind of noise we expect to see, class imbalance, missing and incomplete features etc. Also provide detail on how your approach addresses this.}
+
+% \vspace{1em}
+
+
+Our provided dataset consists of low-field and high-field MRI scans, which differ in 3D dimensions.
+The high-field scans have dimensions 179 x 221 x 200 while the low-field scans have dimensions 112 x 138 x 40.
+They also differ in number of slices, the high-field having 200 slices per sample compared to low-field's 40 slices per sample.
+Our approach either needed to upsample the low-field input prior to model input or build our model to accept
+the lower dimensional samples and learn the upscaling implicitly.
+We decided on the prior approach, manually upsampling the low-field scans with trilinear interpolation prior to training.
+
+low-field/high-field .nii files were loaded in as pairs. low-field volumes were upsampled via trilinear interpolation to match high-field dimensions,
+and both low-field and high-field volumes where then converted into tensors and normalized to have values from zero to 1.
+
+Due to memory constraints, volumes were processed as 96 x 96 x 96 patches using MONAI's sliding window inference rather than full-brain inputs \cite{monai}.
+
+
+
+% \vspace{1em}
+
+
+\begin{figure}[htbp]
+	\centering
+	\begin{subfigure}[b]{0.6\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/original LF.png}
+		\label{fig:og}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.6\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/trilinear.png}
+		\label{fig:tri}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.6\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/target HF.png}
+		\label{fig:target}
+	\end{subfigure}
+	\caption{Original low-field, trilinear upsampled, and target high-field}
+	\label{fig:triple}
+\end{figure}
+
+
+\section{Methods}
+\subsection{Problem Formulation}
+Let $x\in \mathbf{R}^{H_l\times W_l \times D_l}$ be a trilinear upsampled low-field MRI image, and $y \in \mathbf{R}^{H_h\times W_h \times D_h}$ be the corresponding high-field target image data.
+The goal is to learn a mapping with parameter $\theta$, $f_\theta: x \mapsto \hat{y}$ such that $\hat{y}$ approximates $y$.
+
+
+
+\subsection{Proposed Method}
+% \textit{Show your model architecture, and your rationale for why you chose it. Also reference any relevant literature related to this.}
+
+
+\subsubsection{Network Architecture}
+We chose a 3D U-Net encoder-decoder architecture for our model (shown in figure \ref{fig:Model}), as U-Net
+models have been shown to perform fairly well for image and MRI super-resolution tasks \cite{Kalluvila2023,UNet_singleSR}.
+They are also straightforward to implement and easily customizable.
+
+Our model takes 96 x 96 x 96 patches and (ideally) outputs dimension 96 x 96 x 96 upsampled patches.
+Each encoder layer consists of a 3D Residual Convolutional block (ResConvBlock3D, shown in figure \ref{fig:ResConvBlock3D}),
+followed by a MaxPool3d function. The last ``bottleneck'' encoder layer is not followed by MaxPool3d.
+
+Each decoder layer consists of a trilinear interpolation step and a convolution step, followed by a concatenation with corresponding encoder step via a skip connection.
+After concatenation, the result is then run through a ResConvBlock3D step. A final convolution step results in a patch with the same dimensions as the input.
+
+A ResConvBlock3D computes standard feature extraction, $F(x)$, and utilizes a skip connection to add the original input back into the
+feature map before the final activation $Output = F(x) + x$. If channel dimensions change, a 1x1x1 convolution is used to align the shortcut dimensions.
+See \cite{ResNet}.
+\vspace{1em}
+
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width = \textwidth]{figures/UNet3D_DrawIO.png}
+	\caption{\textbf{Our 3D U-Net Model} }
+	\label{fig:Model}
+\end{figure}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.5\linewidth]{figures/ResConvBlock3D_Encode_Diagram.png}
+	\caption{\textbf{Example Encoding ResConvBlock3D} }
+	\label{fig:ResConvBlock3D}
+\end{figure}
+
+\section{Results}
+
+\subsection{Training Details}
+% \textit{Please outline your training/validation approach and hyperparameter tuning (as well as final selected parameters).}
+
+\subsubsection{Loss Function}
+The model parameter $\theta$ is optimized using a hybrid loss function combining L1 and SSIM loss:
+$$
+	\mathcal{L}(\theta) = \lambda_1||\hat{y}-y||_{1}+\lambda_2(1-SSIM(\hat{y},y))
+$$
+where $\hat{y}$ is the generated volume based on $\theta$, $y$ is the high-field target volume, $\lambda_1, \lambda_2 \in [0,1]$, and $ \lambda_1 + \lambda_2 = 1$.
+L1 loss enforces the pixel-wise accuracy and reduces large scale error, while SSIM loss preserves local structure similarity. To prioritize
+the best $SSIM$ score still utilizing L1 loss as a sanity-check, we chose the following values and stuck with them throughout
+the project: \[\lambda_1 = 0.2 \text{ and } \lambda_2 = 0.8\]
+
+\subsubsection{Hyperparameters}
+Our choice for optimizer was \verb|AdamW| from \verb|torch.optim| with learning rate $lr = 0.0002$ and $weight\_decay = 0.00001$.
+We used \verb|ReduceLROnPlateau| from \verb|torch.optim| as our learning rate scheduler, with $mode=``max''$, $factor=0.5$, and $patience=3$.
+
+
+\subsubsection{Hardware and Framework}
+
+Final model training and testing were completed with Python 3.11.14, PyTorch 2.8.0 with CUDA 12.9 acceleration (torch 2.8.0+cu129) on an NVIDIA GeForce RTX 3080 GPU.
+Google Colab instances with NVIDIA T4 GPUs were also utilized throughout the project.
+
+\subsubsection{Approach}
+
+
+We decided to employ 6-fold cross-validation to make full use of limited 18 paired sample training dataset. For each fold, we
+created a new model and a new 15 training - 3 validation dataset split. Each model trained and validated for 40 epochs on their respective dataset split.
+
+
+The six models were then ensembled for testing. For a given low-field sample in our test dataset, each model generates a super-resolution volume.
+The mean is calculated for each voxel, resulting in a final volume that serves as our prediction. Figure \ref{fig:LF_Pred_Comparison}
+shows a comparison between a original low-field test sample and our ensemble's super-resolution result.
+
+
+\subsection{Results}
+% \textit{Show your results on the outlined training/validation approach on the public dataset (including key metrics such as standard deviation, etc. where relevant).}
+
+
+\begin{figure}
+	\centering
+
+	\begin{tabular}{|c|c|c|}
+		\hline
+		Kaggle Team         & Public Score       & Private Score      \\
+		\hline
+		JayZ (1st place)    & 0.6538             & 0.6544             \\
+		sota\_diffusion     & 0.6399             & 0.6343             \\
+		The Synapses (Ours) & \underline{0.5404} & \underline{0.5454} \\
+		baseline            & 0.5129             & 0.5152             \\
+		\hline
+	\end{tabular}
+
+	\caption{Kaggle Results, higher is better. Our scores are \underline{underlined}.}
+\end{figure}
+
+\begin{figure}[htbp]
+	\centering
+	% First subfigure: taking up 45% of the text width
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/nifti LF test.png}
+		\caption{Test sample\_019 low-field}
+		\label{fig:sub1}
+	\end{subfigure}
+	\hfill % This pushes the subfigures apart and fixes underfull \hbox warnings
+	% Second subfigure: taking up 45% of the text width
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/nifti model pred.png}
+		\caption{Test sample\_019 super-resolution result}
+		\label{fig:sub2}
+	\end{subfigure}
+
+	\caption{Comparison between low-field sample\_019 and super-resolution.}
+	\label{fig:LF_Pred_Comparison}
+\end{figure}
+
+
+\section{LLM Prompts}
+% \textit{Please detail your LLM prompts, rationale, and the resulting output.}
+
+During this project, Large Language Models (LLMs) were utilized as technical consultants for debugging 3D tensor operations and refining our optimization strategy.
+The following prompts highlight the rationale behind key architectural and training decisions.
+
+\begin{enumerate}
+	\item Output Layer and Sigmoid Application
+	      \begin{itemize}
+		      \item Prompt: "My high-field MRI target data is normalized between 0 and 1. Should I use a Sigmoid activation function at the very end of my 3D U-Net?"
+
+		      \item Rationale: To determine the optimal final activation function that ensures valid intensity ranges without impacting gradient calculations during backpropagation.
+
+		      \item Output: The LLM explained that while a Sigmoid guarantees strict [0,1] bounds, it can cause vanishing gradients at the extremes (e.g., pure black background or bright white matter structures), which slows down training.
+		            It suggested that since we are using L1 and SSIM loss, we could use a linear output (no activation) to maintain a strong gradient and simply clip the final predictions to [0,1] during post-processing.
+		            We actually chose to ignore this recommendation as we were unfamiliar/uncomfortable with the idea of using torch.clip to restrict values.
+	      \end{itemize}
+
+	\item MS-SSIM vs. SSIM for 3D Volumes
+	      \begin{itemize}
+
+		      \item Prompt: "For a 3D MRI super-resolution task, is it better to use MS-SSIM (Multi-Scale SSIM) or standard SSIM combined with L1 loss?"
+
+		      \item Rationale: To understand the theoretical advantages and practical implementation differences between single-scale and multi-scale structural similarity metrics for high-resolution volumetric data.
+		            We believed MS-SSIM would be best to use since it was our competition's scoring metric.
+
+		      \item Output: The LLM clarified that standard SSIM only evaluates structural preservation at a single receptive field size, which might capture fine textures but miss larger, global anatomical structures.
+		            MS-SSIM iteratively downsamples the volume to evaluate both high-frequency details (like gray/white matter boundaries) and broad brain geometry.
+		            It also warned us about the dimensional constraints of MS-SSIM in 3D (requiring the input patches to be large enough to survive multiple downsampling steps), which ultimately informed our decision on patch size and loss weighting.
+	      \end{itemize}
+
+\end{enumerate}
+
+
+\section{Conclusions}
+% \textit{What did you learn from your experiments? What are existing limitations and ongoing issues? What changes would you make going forward?}
+
+
+From this experiment, we observed that stable optimization was more critical than model complexity for this project.
+While the diffusion-based model was theoretically appealing, the 3D U-Net achieved consistent improvements with significantly lower training instability
+while being much more straightforward to implement.
+
+\subsection{Limitations and Ongoing Issues}
+\begin{enumerate}
+	\item Loss Function Biased towards Smoothness
+	      \begin{itemize}
+		      \item Although we incorporated a hybrid L1+SSIM loss to encourage structural similarity locally, the super-resolution still exhibits some over-smoothness of boundaries and blurring of details.
+		            Near the border of gray and white matters, or boundaries between different brain structures, the pixel intensities can change quickly across space, which may be difficult to account for with SSIM loss or L1 loss.
+	      \end{itemize}
+
+	\item Built-in Trilinear Interpolation
+	      \begin{itemize}
+		      \item Our model relies on the same interpolation method we are trying to beat.
+	      \end{itemize}
+\end{enumerate}
+
+
+\subsection{Future Improvements}
+If given additional time, we would like to make the following adjustments:
+\begin{enumerate}
+	\item Perceptual Hybrid Loss Function
+	      \begin{itemize}
+		      \item Incorporate perceptual loss to focus on semantic features of the brain scan images.
+		            This loss function can be more sensitive to area with high-frequency data.
+	      \end{itemize}
+
+	\item MONAI Transforms
+	      \begin{itemize}
+		      \item We forgot to uncomment a line which applied various transforms during model training to improve generalization.
+		            We believe this mistake cost us a slightly higher score.
+	      \end{itemize}
+
+	\item Eliminating Interpolation Reliance
+	      \begin{itemize}
+		      \item Replace trilinear interpolation layers in our model's decoder with another learnable neural network layer.
+	      \end{itemize}
+
+\end{enumerate}
+
+
+\section{Author contributions}
+% \textit{You must explicitly state who in the team worked on which parts of the project.}
+
+Most research article discovery and collection was completed by Ryan and Jasmine. All authors contributed equally on preliminary model testing,
+particularly in attempt to use more complicated diffusion models found in articles. Vincent trained the finalized 3D U-Net model on his personal computer.
+Finally, all authors wrote this report!
+
+\section{References}
+% Please make sure to include references for what you cite. \textbf{LLMs often get these wrong, so please double check if you use LLMs here!}
+
+
+\printbibliography[heading=none]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\end{document}
