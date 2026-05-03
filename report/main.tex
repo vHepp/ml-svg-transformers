@@ -315,7 +315,8 @@ the depth dimensions (n\_layers and n\_heads) were held constant across all mode
 \subsection{Training setup and hyperparameters}
 
 The models were trained using the AdamW optimizer paired with a cosine annealing learning rate scheduler with a linear warmup period
-spanning the first 5\% of training steps. During our full training of the \mup-tuned ``XL'' model, we swapped out our manual attention calculations
+spanning the first 5\% of training steps. Training batch sizes varied from 64 to 128 depending on GPU availability.
+During our full training of the \mup-tuned ``XL'' model, we swapped out our manual attention calculations
 with PyTorch's native \verb|F.scaled_dot_product_attention| (FlashAttention) to speed up our iteration throughput.
 We utilized three unique platforms during this project: An M4 Macbook Air with MPS acceleration, a Windows 10 PC with NVIDIA RTX 3080 GPU + CUDA,
 and NYU HPC's Google Cloud Bursting with an NVIDIA A100 GPU + CUDA.
