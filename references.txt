@@ -6,3 +6,12 @@
 }
 
 https://arxiv.org/abs/2203.09789
+
+
+@misc{mdn,
+  author = {{MDN Web Docs}},
+  title = {SVG: Scalable Vector Graphics},
+  year = {2025},
+  url = {https://developer.mozilla.org/en-US/docs/Web/SVG},
+  note = {Accessed: 2026-05-01}
+}

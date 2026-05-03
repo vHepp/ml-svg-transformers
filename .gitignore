@@ -14,7 +14,9 @@ __pycache__/
 # Latex other files
 *.aux
 *.bbl
+*.bbl-SAVE-ERROR
 *.bcf
+*.blg
 *.fdb_latexmk
 *.fls
 *.out
@@ -24,7 +26,8 @@ __pycache__/
 
 
 
-
+report/svg-inkscape
+report/_minted
 
 
 # Distribution / packaging
