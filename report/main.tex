@@ -145,8 +145,8 @@ Finally, we evaluate the generative capabilities of the fully trained models thr
 % Four steps
 % \begin{enumerate}
 % 	\item Collect and preprocess SVG data, train a BPE tokenizer, ensure desired Token counts.
-% 	\item Build the Transformer model architecture from scratch, short train 5 different model sizes at fixed learning rate (LR).
-% 	\item Build new Transformer model with \mup, repeat short train of same 5 model sizes based on fixed learning rate.
+% 	\item Build the Transformer model architecture from scratch, short train five different model sizes at fixed learning rate (LR).
+% 	\item Build new Transformer model with \mup, repeat short train of same five model sizes based on fixed learning rate.
 % 	\item Full train of best model, generate samples.
 % \end{enumerate}
 
@@ -181,22 +181,23 @@ The data strings are the most important part for our models to learn to generate
 % Dataset description and preprocessing pipeline
 
 
-The training data was sourced from the \verb|starvector/svg-stack-simple| dataset via Hugging Face~\cite{rodriguez2023starvector}.
+Our training data was sourced from the \verb|starvector/svg-stack-simple| dataset via Hugging Face~\cite{rodriguez2023starvector}.
 To normalize the data, we applied a strict regex-based cleaning pipeline.
 All XML comments and metadata were stripped, and coordinate precision was rounded to a single decimal place.
 The string data within the \verb|<path>| tags was spaced out to isolate individual command letters (i.e., M, L, C)
-from numerical coordinates. Finally, any SVGs containing fewer than 50 characters or exceeding \verb|TOKEN_THRESHOLD|
-of 2,048 characters were filtered out. This threshold was chosen to balance the complexity of the SVGs with the
+from numerical coordinates. Finally, any SVGs containing fewer than 50 characters or exceeding a length threshold
+of 2,048 characters (defined in our code as \verb|TOKEN_THRESHOLD|) were filtered out.
+This threshold was chosen to balance the complexity of the SVGs with the
 memory constraints of our \verb|BLOCK_SIZE = 256| context window, ensuring the self-attention mechanism remained computationally feasible.
 We also included checks for broken XML encodings and SVG rendering errors, but we never experienced these during data cleaning.
 
 Initially, we worked with the \verb|starvector/svg-icons-simple| and \verb|starvector/svg-emoji-simple|
-datasets, but their combination alone yielded fewer than 100 million tokens.
+datasets, but their combination alone yielded fewer than 100 million tokens during the next section. Therefore, we omitted them.
 Figure \ref{starvec_table} shows a size comparison of the three datasets.
 
 \begin{figure}[htbp]
 	\centering
-	\begin{tabular}{cc}
+	\begin{tabular}{cr}
 		Starvector Dataset & Number of SVGs   \\
 		\hline
 		svg-icons-simple   & 89370            \\
@@ -254,13 +255,13 @@ in the same way as in Figure \ref{raw_checkmark}.
 We trained a custom Byte-Pair Encoding (BPE) tokenizer using the Hugging Face \verb|tokenizers| library \cite{BPE, tokenizer}.
 The vocabulary size (\verb|VOCAB_SIZE|) was set to 1,000 tokens, somewhat arbitrarily, at the lower end of the recommended range.
 Both \verb|WhitespaceSplit()| and \verb|Punctuation()| were added to the pre-tokenizer during training.
-A sample of the resulting tokenizer vocabulary after training is shown in figure \ref{vocab}.
+A sample of the resulting tokenizer vocabulary after training is shown in Figure \ref{vocab}.
 
 
 % \subsection{Statistics and Examples}
 % Statistics and rendered SVG examples
 
-The table in figure \ref{token_table} describes the sizes of each subset of our cleaned dataset and the number of tokens
+The table in Figure \ref{token_table} describes the sizes of each subset of our cleaned dataset and the number of tokens
 created after the tokenization step. Figures \ref{length_hist} and \ref{token_length_hist} demonstrate that all three
 subsets share a relatively similar distribution of string and token lengths.
 
@@ -269,7 +270,7 @@ subsets share a relatively similar distribution of string and token lengths.
 \begin{figure}[htbp]
 	\centering
 	\begin{tabular}{lcc}
-		Subset & Number of SVGs           & Tokens                       \\
+		Subset & Number of SVGs           & Number of Tokens             \\
 		\hline
 		Train  & \hfill 204630 (98.01\%)  & \hfill 130428077 (98.00\%)   \\
 		Val    & \hfill 2088  (\;1.00\% ) & \hfill 1355632   (\;1.02\% ) \\
@@ -293,8 +294,8 @@ subsets share a relatively similar distribution of string and token lengths.
 Our CustomTransformer model class shown in figures \ref{Head}--\ref{CustomTransformer} was built from the ground up with PyTorch
 following the original \textit{Attention Is All You Need} paper and Andrej Karpathy's \textit{nanoGPT} repository \cite{Vaswani,nanoGPT}.
 Five configurations of the model were considered for our experiments. Due to \mup~package requirements,
-the depth dimensions (n\_layers and n\_heads) were held constant across all models while width dimensions
-(d\_model and d\_ff) varied. The model configurations are shown in figure \ref{model_configs}.
+the depth dimensions (\verb|n_layers| and \verb|n_heads|) were held constant across all models while width dimensions
+(\verb|d_model| and \verb|d_ff|) varied. The model configurations are shown in Figure \ref{model_configs}.
 
 \begin{figure}[htbp]
 	\centering
@@ -314,11 +315,11 @@ the depth dimensions (n\_layers and n\_heads) were held constant across all mode
 
 \subsection{Training setup and hyperparameters}
 
-The models were trained using the AdamW optimizer paired with a cosine annealing learning rate scheduler with a linear warmup period
+The models were trained using the AdamW optimizer and a cosine annealing learning rate scheduler with a linear warmup period
 spanning the first 5\% of training steps. Training batch sizes varied from 64 to 128 depending on GPU availability.
 During our full training of the \mup-tuned ``XL'' model, we swapped out our manual attention calculations
 with PyTorch's native \verb|F.scaled_dot_product_attention| (FlashAttention) to speed up our iteration throughput.
-We utilized three unique platforms during this project: An M4 Macbook Air with MPS acceleration, a Windows 10 PC with NVIDIA RTX 3080 GPU + CUDA,
+We utilized three unique platforms during this project: An M4 Macbook Air with MPS acceleration, a Windows 10 PC with an NVIDIA RTX 3080 GPU + CUDA,
 and NYU HPC's Google Cloud Bursting with an NVIDIA A100 GPU + CUDA.
 
 
@@ -330,9 +331,9 @@ To analyze the scaling behavior of the Transformer, we evaluated the models acro
 while the width (embedding dimension \verb|d_model| and feed-forward dimension \verb|d_ff|) was scaled.
 We compared the performance of models using Standard Parameterization (SP) versus Maximal
 Update Parameterization (\mup). To do this, we first performed a 1000-step learning rate sweep on
-the proxy ``Tiny'' model to identify the optimal base learning rate. 7 orders of learning rates were
+the proxy ``Tiny'' model to identify the optimal base learning rate. Seven orders of learning rates were
 tested: LR = $10^{-7}$, $10^{-6}$, $10^{-5}$, $10^{-4}$, $10^{-3}$, $10^{-2}$, and $10^{-1}$.
-Once the optimal learning rate was identified, we then trained each of the 5 models on one full pass of
+Once the optimal learning rate was identified, we then trained each of the five models on one full pass of
 our training data subset, tracking both training and validation losses along the way.
 Using the \mup~framework, we repeated this process again to find a potentially new optimal learning rate
 and apply it across all larger model sizes to observe zero-shot hyperparameter transfer and
@@ -357,41 +358,56 @@ batches of both unconditional and conditional generation prompts.
 
 
 Figure \ref{FixedLR} shows that the standard fixed learning rate approach ($1 \times 10^{-2}$) works fine while training smaller models,
-but not for the largest models we tested. Almost immediately into training 1 epoch, the ``Large'' and ``XL''
-model's training loss curves diverge from the smaller models. We also see that validation loss
+but not for the largest models we tested. Almost immediately into training one epoch, the ``Large'' and ``XL''
+models' training loss curves diverge from the smaller models. We also see that validation loss
 does not follow a power-law relationship with respect to the model parameters, as the fitted scaling
 exponent $\alpha = 0$.
 
-In contrast, figure \ref{muLR} shows that the \mup~framework stabilized the optimal learning rate on the
+In contrast, Figure \ref{muLR} shows that the \mup~framework stabilized the optimal learning rate on the
 ``Tiny'' model and successfully transferred it to the ``Large'' and ``XL'' models without causing training divergence.
 The validation loss follows a power-law relationship with respect to the model parameters, as the fitted scaling
 exponent $\alpha \approx -1.83$.
 
 \subsection{Scaling law extrapolation prediction}
 
-When considering a model with 440M parameters---10x the parameters of our ``XL'' model---that is tuned with \mup,
+When considering a model with 440M parameters---10x the parameters of our ``XL'' model---which is tuned with \mup,
 we would confidently predict the training loss to be quite similar at around 0.46. This prediction follows directly from the fitted
-power law in figure \ref{muLR}.
+power law in Figure \ref{muLR}.
 
 \subsection{Generated samples with evaluation}
 
-Our fully trained XL model was evaluated by generating 10 unconditional samples and 5 conditional
-samples (Figures \ref{Unconditioned} and \ref{Conditioned}). Using temperature scaling ($0.7$) and
+Our fully trained XL model was evaluated by generating 10 unconditional samples and five conditional
+samples (Figures \ref{Unconditioned} - \ref{Conditioned_2}). Using temperature scaling ($0.7$) and
 Top-K filtering ($K=5$), the model achieved a 100\% success rate in both XML validity
-(10/10 unconditional, 5/5 conditional) and renderability. However, the model would occasionally
-try to generate strings longer than our \verb|max_new_tokens = TOKEN_THRESHOLD| limit while testing.
+(10/10 unconditional, 5/5 conditional) and renderability. There is some hidden variability in our success however,
+as the model would occasionally try to generate strings longer than our \verb|max_new_tokens = TOKEN_THRESHOLD| limit while testing.
 
 
 While the model successfully learned the strict syntactic grammar of SVGs, a post-processing function
 was required to resolve spacing artifacts introduced by the tokenizer. After post-processing, the rendered
 outputs visually resembled abstract geometric squiggles rather than coherent icons.
+The unconditioned generation shown in Figure \ref{Unconditioned_0}, for example,
+contains an unidentifiable chaotic mess of somewhat symmetric shapes.
+
+\subsection{Perplexity}
+
+\begin{figure}[htbp]
+	\centering
+	\begin{tabular}{lc}
+		Metric                  & Value  \\
+		\hline
+		Test Cross-Entropy Loss & 0.3839 \\
+		Test Perplexity         & 1.4681
+	\end{tabular}
+\end{figure}
+
 
 \section{Discussion}
 % (1-2 pages)
 
 \subsection{Key insights from scaling experiments}
 
-The scaling plots in figure \ref{muLR} confirm that increasing model width reliably improves the next-token
+The scaling plots in Figure \ref{muLR} confirm that increasing model width reliably improves the next-token
 prediction capabilities on SVG data, following predictable power-law dynamics, if proper care is taken when
 choosing a learning rate based on model size.
 
@@ -419,7 +435,9 @@ a quick fix by holding the depth dimensions constant without modifying the width
 configurations that did not cover as wide of range of parameter counts as originally planned.
 
 Also, a bug in our code caused us to overwrite our final ``XL'' model training loss graphs with the single latest epoch
-loss. The plot is shown in figure \ref{last_loss}, but is effectively useless.
+loss. The plot is shown in Figure \ref{last_loss}, but is effectively useless.
+
+We did not cover the
 
 \section{Conclusion}
 In this project, we successfully collected, cleaned, and tokenized a dataset of over 200,000
@@ -655,7 +673,7 @@ models successfully learned to natively write and format functional, renderable 
 	\end{subfigure}
 
 	\caption{Unconditioned ``XL'' Model-Generated SVG \#1.}
-	\label{Conditioned_0}
+	\label{Unconditioned_0}
 \end{figure}
 
 
@@ -864,7 +882,7 @@ models successfully learned to natively write and format functional, renderable 
 	\vspace{1em}
 
 	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0.0 0.0 24.0 24.0" height="200px" width="200px">
-	<rect width="100\%" height="100\%" fill="white"/><path fill="none" stroke="black" stroke-width=".3"
+	<path fill="none" stroke="black" stroke-width=".3"
 	stroke-opacity="1.0" filling="0" d="M 28.0 22.0 L 31.2 25.2 L 34.4 28.4 L 31.2 31.6 L 28.0 34.7 L 24.8
 	31.6 L 21.7 28.4"></path> <path fill="none" stroke="black" stroke-width=".3" stroke-opacity="1.0"
 	filling="0" d="M 28.0 22.8 L 28.0 22.8 C 29.4 23.7 30.7 25.5 32.2 26.1 C 32.8 26.3 33.5 26.3 34.2
@@ -912,7 +930,7 @@ models successfully learned to natively write and format functional, renderable 
 	\vspace{1em}
 
 	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0.0 0.0 24.0 24.0" height="200px" width="200px">
-	<rect width="100\%" height="100\%" fill="white"/><path fill="none" stroke="black" stroke-width=".3"
+	<path fill="none" stroke="black" stroke-width=".3"
 	stroke-opacity="1.0" filling="0" d="M 925.9 695.1 L 930.7 695.1 L 935.4 695.1 L 935.4 699.8 L 935.4
 	704.5 L 930.7 704.5 L 925.9 704.5 L 925.9 699.8 L 925.9 695.1"></path> <path fill="none" stroke="black"
 	stroke-width=".3" stroke-opacity="1.0" filling="0" d="M 938.1 695.1 L 942.8 695.1 L 947.5 695.1 L
