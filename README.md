@@ -61,10 +61,17 @@ _Note: The datasets are cached locally. You may need to configure your `HF_HOME`
 
 ## Samples
 
-<img src="images/xl_unconditional_0_t0_7_k5.svg" width="150" />
-<img src="images/conditional_1_t0_7_k5.svg" width="150" />
-<img src="images/xl_unconditional_5_t0_7_k5.svg" width="150" />
-<img src="images/conditional_0_t0_7_k5.svg" width="150" />
-
-<img src="plots/plot_2.png" width="350" />
-<img src="plots/mu_plot_2.png" width="350" />`
+<table>
+  <tr>
+    <td><img src="images/xl_unconditional_0_t0_7_k5.svg" width="100" /></td>
+    <td><img src="images/conditional_1_t0_7_k5.svg" width="100" /></td>
+    <td><img src="images/xl_unconditional_5_t0_7_k5.svg" width="100" /></td>
+    <td><img src="images/conditional_0_t0_7_k5.svg" width="100" /></td>
+  </tr>
+</table>
+<table>
+  <tr>
+    <td><img src="plots/plot_2.png" width="230" /></td>
+    <td><img src="plots/mu_plot_2.png" width="230" /></td>
+  </tr>
+</table>
