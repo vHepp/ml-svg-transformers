@@ -361,12 +361,13 @@ Figure \ref{FixedLR} shows that the standard fixed learning rate approach ($1 \t
 but not for the largest models we tested. Almost immediately into training one epoch, the ``Large'' and ``XL''
 models' training loss curves diverge from the smaller models. We also see that validation loss
 does not follow a power-law relationship with respect to the model parameters, as the fitted scaling
-exponent $\alpha = 0$.
+exponent $\alpha \approx 0.0001$.
 
 In contrast, Figure \ref{muLR} shows that the \mup~framework stabilized the optimal learning rate on the
 ``Tiny'' model and successfully transferred it to the ``Large'' and ``XL'' models without causing training divergence.
 The validation loss follows a power-law relationship with respect to the model parameters, as the fitted scaling
-exponent $\alpha \approx -1.83$.
+exponent $\alpha \approx -1.8330$.
+
 
 \subsection{Scaling law extrapolation prediction}
 
@@ -374,9 +375,19 @@ When considering a model with 440M parameters---10x the parameters of our ``XL''
 we would confidently predict the training loss to be quite similar at around 0.46. This prediction follows directly from the fitted
 power law in Figure \ref{muLR}.
 
+
 \subsection{Generated samples with evaluation}
 
-Our fully trained XL model was evaluated by generating 10 unconditional samples and five conditional
+\begin{figure}[htbp]
+	\centering
+
+	\includegraphics[width=.8\linewidth]{../plots/XL_training_loss_2.png}
+	% \caption*{}
+	\caption{Training and validation loss of final ``XL'' model.}
+	\label{last_loss}
+\end{figure}
+
+Our fully trained ``XL'' model (with loss functions show in Figure \ref{last_loss}) was evaluated by generating 10 unconditional samples and five conditional
 samples (Figures \ref{Unconditioned} - \ref{Conditioned_2}). Using temperature scaling ($0.7$) and
 Top-K filtering ($K=5$), the model achieved a 100\% success rate in both XML validity
 (10/10 unconditional, 5/5 conditional) and renderability. There is some hidden variability in our success however,
@@ -391,6 +402,12 @@ contains an unidentifiable chaotic mess of somewhat symmetric shapes.
 
 \subsection{Perplexity}
 
+The ``XL'' model achieved a final test Cross-Entropy loss of 0.3839, corresponding to a remarkably low Test Perplexity of 1.4681.
+In natural language modelling, a perplexity this low would typically indicate near-perfect mastery of the dataset's semantic meaning.
+However, in the SVG domain, this metric is in stark contrast with the model's inability to generate coherent images.
+We suspect that the model has learned the predictable syntactic transitions (e.g., spaces following coordinates)
+without fully grasping the global geometric structure.
+
 \begin{figure}[htbp]
 	\centering
 	\begin{tabular}{lc}
@@ -399,6 +416,7 @@ contains an unidentifiable chaotic mess of somewhat symmetric shapes.
 		Test Cross-Entropy Loss & 0.3839 \\
 		Test Perplexity         & 1.4681
 	\end{tabular}
+	\label{Perplexity}
 \end{figure}
 
 
@@ -429,15 +447,21 @@ quadrupled our iteration speed and saturated the A100 GPU's memory bandwidth.
 
 \subsection{Limitations and future work}
 
+
+The primary limitation of this study lies in the token distribution of the training corpus. The exceptional test perplexity achieved by our ``XL''
+model suggests that the dataset suffers from severe token imbalance, heavily dominated by formatting characters like spaces and repetitive XML tags.
+Future work should investigate more sophisticated coordinate quantization techniques or custom tokenizer pre-processing that normalizes numerical values.
+This would force the model to learn the underlying mathematical distributions rather than simply memorizing high-frequency syntactic formatting.
+
 The \mup~framework required us to hold depth dimensions constant across all the models we tested, so our results
 are comparable when varying the width dimensions. We realized this limitation late into testing, leaving us to apply
 a quick fix by holding the depth dimensions constant without modifying the width dimensions. This decision resulted in model
 configurations that did not cover as wide of range of parameter counts as originally planned.
 
-Also, a bug in our code caused us to overwrite our final ``XL'' model training loss graphs with the single latest epoch
-loss. The plot is shown in Figure \ref{last_loss}, but is effectively useless.
+We also want to produce a much greater variety
+of model-generated examples at different temperatures and topk-choices, and subsequently provide a more thorough analysis of
+our models' generative behaviors.
 
-We did not cover the
 
 \section{Conclusion}
 In this project, we successfully collected, cleaned, and tokenized a dataset of over 200,000
@@ -446,7 +470,8 @@ scaling laws and demonstrated the effectiveness of Maximal Update Parameterizati
 zero-shot hyperparameter transfer. While generating meaningful SVG art with
 language models remains a challenge, our
 models successfully learned to natively write and format functional, renderable SVG files.
-% (0.5 page)
+
+The GitHub repository for this project can be found at \href{https://github.com/vHepp/ml-svg-transformers}{github.com/vHepp/ml-svg-transformers}.
 
 \section{References}
 
@@ -1295,15 +1320,6 @@ class CustomTransformer(nn.Module):
 	\end{subfigure}
 	\caption{Comparison Between Standard and \mup~Parameterized Models}
 	\label{comparison}
-\end{figure}
-
-\begin{figure}[htbp]
-	\centering
-
-	\includegraphics[width=\linewidth]{../plots/XL_training_loss.png}
-	% \caption*{}
-	\caption{Last epoch loss of final ``XL'' model training. Lost full history due to a coding bug}
-	\label{last_loss}
 \end{figure}
 
 
